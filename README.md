@@ -564,13 +564,7 @@ Available in this Repository
   </a>
 </p>
 
-<br>
-
-<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/fire.png" alt="divider"/>
-
-<br>
-
-### Built with ❤️ using
+### Built Using
 
 <p>
   <img src="https://img.shields.io/badge/Built%20with-Google%20Gemini%20AI-purple?style=for-the-badge&logo=google&logoColor=white" alt="Gemini"/>
