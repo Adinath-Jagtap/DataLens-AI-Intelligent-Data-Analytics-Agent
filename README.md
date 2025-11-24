@@ -10,13 +10,7 @@
   <img src="https://img.shields.io/badge/Google-Gemini%20AI-purple?style=for-the-badge&logo=google&logoColor=white" alt="Gemini"/>
 </p>
 
-<p align="center">
-  <strong>An autonomous AI-powered data analytics system that transforms raw datasets into professional visualizations and interactive dashboards</strong>
-</p>
-
-<p align="center">
-  Built with Google's Gemini API • Intelligent Analysis • Automated Cleaning • Comprehensive Visual Insights
-</p>
+**An autonomous AI-powered data analytics system that transforms raw datasets into professional visualizations and interactive dashboards**
 
 <p align="center">
   <a href="https://huggingface.co/spaces/adinathjagtap/ai-data-analysis-agent">🚀 Live Demo (V1)</a> •
@@ -24,9 +18,7 @@
   <a href="#-quick-start">📖 Documentation</a>
 </p>
 
-<p align="center">
-  <em>Capstone Project Submission for Google's 5-Day AI Agents Intensive Course</em>
-</p>
+*Capstone Project for Google's 5-Day AI Agents Intensive Course*
 
 <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png" alt="divider"/>
 
@@ -34,37 +26,61 @@
 
 ## 📖 Table of Contents
 
-<details>
-<summary>Click to expand</summary>
-
-- [🔄 Workflow Pipeline](#-workflow-pipeline)
-- [🎯 Core Capabilities](#-core-capabilities)
-- [🛠️ Installation & Setup](#️-installation--setup)
-- [📋 Quick Start](#-quick-start)
+- [🎯 Problem & Solution](#-problem--solution)
+- [🏗️ System Architecture](#️-system-architecture)
+- [✨ Core Capabilities](#-core-capabilities)
+- [🚀 Quick Start](#-quick-start)
 - [🎨 Features](#-features)
+- [🔧 Technical Stack](#-technical-stack)
 - [📊 Output Deliverables](#-output-deliverables)
-- [🔧 Technical Architecture](#-technical-architecture)
-- [🛡️ Security Features](#️-security-features)
 - [📈 Use Cases](#-use-cases)
+- [🛡️ Security](#️-security)
 - [📚 Project Structure](#-project-structure)
-- [🚨 Notes](#-notes)
-- [📄 License](#-license)
-
-</details>
 
 <br>
 
-## 🔄 Workflow Pipeline
+## 🎯 Problem & Solution
 
-<div align="center">
+### The Challenge
+
+Modern data analysis faces critical barriers:
+
+- **Complexity**: Multiple tools required for cleaning, analysis, and visualization
+- **Technical Skills**: Demands expertise in Python, pandas, and visualization libraries
+- **Time Investment**: Manual processes consume hours of productive time
+- **Accessibility**: Non-technical users locked out of advanced analytics
+- **Inconsistency**: Variable quality based on individual expertise
+
+### Our Solution
+
+**DataLens AI** democratizes data analysis through AI automation:
+
+```
+Raw Data → AI Processing → Professional Insights
+   ↓            ↓                    ↓
+Upload → Gemini Analysis → Interactive Dashboard
+```
+
+**Key Benefits:**
+- 🤖 **AI-Driven**: Leverages Google's Gemini API for intelligent processing
+- ⚡ **Fast**: Hours of work reduced to minutes
+- 🎯 **Complete**: End-to-end pipeline in a single notebook
+- 🚀 **No-Code**: Upload and process without manual coding
+- 📊 **Professional**: Publication-quality visualizations
+
+<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png" alt="divider"/>
+
+## 🏗️ System Architecture
+
+### Pipeline Workflow
 
 ```mermaid
 graph LR
-    A[🔧 SetupEnvironment] --> B[🤖 InitializeGemini AI]
-    B --> C[📁 LoadData]
-    C --> D[🧠 AI-PoweredAnalysis & Cleaning]
-    D --> E[📊 GenerateVisualizations]
-    E --> F[📈 InteractiveDashboard]
+    A[🔧 Setup Environment] --> B[🤖 Initialize Gemini AI]
+    B --> C[📁 Load Data]
+    C --> D[🧠 AI Analysis & Cleaning]
+    D --> E[📊 Generate Visualizations]
+    E --> F[📈 Interactive Dashboard]
     
     style A fill:#e3f2fd,stroke:#1976d2,stroke-width:3px,color:#000000
     style B fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px,color:#000000
@@ -74,98 +90,76 @@ graph LR
     style F fill:#e0f2f1,stroke:#00796b,stroke-width:3px,color:#000000
 ```
 
-</div>
+### Component Architecture
 
-<br>
+```
+┌─────────────────┐    ┌──────────────────┐    ┌──────────────────┐
+│   Data Input    │    │  AI Processing   │    │ Output Generation│
+│                 │    │                  │    │                  │
+│ • CSV/Excel     │───▶│ • Gemini AI     │───▶│ • Visualizations │
+│ • Raw Data      │    │ • Analysis       │    │ • Dashboard      │
+│ • File Upload   │    │ • Code Generation│    │ • Reports        │
+└─────────────────┘    └──────────────────┘    └──────────────────┘
+         │                        │                        │
+         └────────────────────────┼────────────────────────┘
+                                  │
+                         ┌──────────────────┐
+                         │ Data Processing  │
+                         │                  │
+                         │ • Cleaning       │
+                         │ • Transformation │
+                         │ • Encoding       │
+                         └──────────────────┘
+```
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png" alt="divider"/>
-</div>
+<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png" alt="divider"/>
 
-## 🎯 Core Capabilities
+## ✨ Core Capabilities
 
 <table>
 <tr>
 <td width="33%" align="center">
-<h1>🤖</h1>
-
-### **AI-Driven Intelligence**
-
-Leverages Gemini API for automated data quality assessment and insights generation
-
+<h3>🤖 AI-Driven Intelligence</h3>
+<p>Gemini API for automated quality assessment and insights generation</p>
 </td>
 <td width="33%" align="center">
-<h1>📁</h1>
-
-### **Interactive Data Upload**
-
-Seamless file upload widget supporting CSV and Excel formats
-
+<h3>🧹 Smart Data Cleaning</h3>
+<p>Intelligent cleaning code generation based on data profiling</p>
 </td>
 <td width="33%" align="center">
-<h1>🧹</h1>
-
-### **Automated Cleaning**
-
-Generates and applies intelligent cleaning code based on data profiling
-
+<h3>📊 Advanced Visualizations</h3>
+<p>10+ chart types with professional styling and interactivity</p>
 </td>
 </tr>
 <tr>
 <td width="33%" align="center">
-<h1>📊</h1>
-
-### **Smart Outlier Handling**
-
-Uses statistical capping methods to preserve data integrity
-
+<h3>📈 Interactive Dashboard</h3>
+<p>Real-time filters, KPI cards, and auto-updating charts</p>
 </td>
 <td width="33%" align="center">
-<h1>🏭</h1>
-
-### **Production-Ready Output**
-
-Delivers ML-ready datasets with proper encoding and standardization
-
+<h3>🏭 Production-Ready</h3>
+<p>ML-ready datasets with encoding and standardization</p>
 </td>
 <td width="33%" align="center">
-<h1>📈</h1>
-
-### **Professional Visualizations**
-
-Creates publication-quality charts and interactive dashboards
-
+<h3>📁 Seamless Upload</h3>
+<p>Interactive widget supporting CSV and Excel formats</p>
 </td>
 </tr>
 </table>
 
-<br>
+<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/solar.png" alt="divider"/>
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png" alt="divider"/>
-</div>
-
-## 🛠️ Installation & Setup
+## 🚀 Quick Start
 
 ### Prerequisites
-
-<div align="center">
 
 | Requirement | Version | Status |
 |:------------|:-------:|:------:|
 | **Python** | 3.8+ | ✅ Required |
-| **Jupyter Notebook** | Latest | ✅ Required |
 | **Google Colab** | - | 🌟 Recommended |
 | **Gemini API Key** | - | 🔑 Required |
 
-</div>
-
 ### Installation
-
-<details>
-<summary><b>📦 Click to view installation command</b></summary>
-
-<br>
 
 ```bash
 pip install pandas numpy matplotlib seaborn plotly scikit-learn ipywidgets \
@@ -173,165 +167,123 @@ pip install pandas numpy matplotlib seaborn plotly scikit-learn ipywidgets \
             openpyxl xlrd jupyterlab
 ```
 
-</details>
+### Setup Steps
 
-<br>
-
-<div align="center">
-  <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/solar.png" alt="divider"/>
-</div>
-
-## 📋 Quick Start
-
-<div align="center">
-
-### *Get started in 5 simple steps*
-
-</div>
-
-<br>
-
-<details open>
-<summary><b>🔧 Step 1: Environment Setup</b></summary>
-
-<br>
-
-```python
-# Cell 1: Install all required dependencies
-!pip install pandas numpy matplotlib seaborn plotly scikit-learn ipywidgets \
-            jsonschema google-generativeai google-auth google-auth-oauthlib \
-            openpyxl xlrd jupyterlab --quiet
+**1. Access the Notebook**
+```bash
+# Open in Google Colab
+File → Upload → Select the .ipynb notebook
 ```
 
-<div align="right"><em>⏱️ ~2 minutes</em></div>
+**2. Configure API Key**
+```python
+# Add Gemini API key to Colab Secrets
+# 1. Click 🔑 in left sidebar
+# 2. Add new secret: GEMINI_API_KEY = "your_api_key"
+```
 
-</details>
+**3. Run the Pipeline**
+```python
+# Execute cells sequentially:
+# Cells 1-2:  Environment setup
+# Cells 3-4:  AI initialization  
+# Cell 5:     Data upload
+# Cells 6-9:  AI cleaning
+# Cells 10-14: Visualizations
+# Cells 15-17: Dashboard
+# Cells 18-19: Reports
+```
 
-<details open>
-<summary><b>🤖 Step 2: Initialize Gemini AI</b></summary>
+### Usage Example
 
-<br>
+<details>
+<summary><b>🔧 Initialize Environment</b></summary>
 
 ```python
-# Cell 3-4: Configure API and initialize client
+# Cell 1: Install dependencies
+!pip install pandas numpy matplotlib seaborn plotly scikit-learn ipywidgets \
+            jsonschema google-generativeai --quiet
+```
+*⏱️ ~2 minutes*
+</details>
+
+<details>
+<summary><b>🤖 Initialize Gemini AI</b></summary>
+
+```python
+# Cell 3-4: Configure API
 from google.colab import userdata
 import google.genai as genai
 
 api_key = userdata.get("GEMINI_API_KEY")
 client = genai.Client(api_key=api_key)
 ```
-
-<div align="right"><em>⏱️ ~30 seconds</em></div>
-
+*⏱️ ~30 seconds*
 </details>
 
-<details open>
-<summary><b>📁 Step 3: Load Your Dataset</b></summary>
-
-<br>
+<details>
+<summary><b>📁 Load Dataset</b></summary>
 
 ```python
-# Cell 5: Upload and analyze data
-df = upload_dataset()  # Interactive CSV/Excel upload
-dataset_summary = generate_dataset_summary(df)  # AI-ready analysis
+# Cell 5: Upload and analyze
+df = upload_dataset()
+dataset_summary = generate_dataset_summary(df)
 ```
-
-<div align="right"><em>⏱️ Variable (depends on file size)</em></div>
-
+*⏱️ Variable (depends on file size)*
 </details>
 
-<details open>
-<summary><b>🧹 Step 4: AI-Powered Data Cleaning</b></summary>
-
-<br>
+<details>
+<summary><b>🧹 AI-Powered Cleaning</b></summary>
 
 ```python
-# Cell 6-7: Automated cleaning analysis
+# Cell 6-7: Automated cleaning
 cleaning_prompt = build_cleaning_prompt(dataset_summary)
 cleaning_output = ask_gemini_cleaning(cleaning_prompt)
 ```
-
-<div align="right"><em>⏱️ ~1 minute</em></div>
-
+*⏱️ ~1 minute*
 </details>
 
-<details open>
-<summary><b>📊 Step 5: Generate Visualizations & Dashboard</b></summary>
-
-<br>
+<details>
+<summary><b>📊 Generate Visualizations</b></summary>
 
 ```python
-# Cell 10-14: Create professional charts
+# Cell 10-14: Create charts
 viz_code = prompt_gemini(viz_prompt)
-exec(viz_code)  # Execute AI-generated visualization code
+exec(viz_code)
 
-# Cell 15-17: Build interactive dashboard
+# Cell 15-17: Build dashboard
 dashboard_code = prompt_gemini(dash_prompt)
 exec(dashboard_code)
 ```
-
-<div align="right"><em>⏱️ ~2 minutes</em></div>
-
+*⏱️ ~2 minutes*
 </details>
 
-<br>
-
-<div align="center">
-  <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/fire.png" alt="divider"/>
-</div>
+<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/fire.png" alt="divider"/>
 
 ## 🎨 Features
 
 ### 🔍 Automated Data Analysis
 
-<div align="center">
-
-```
-╔══════════════════════════════════════════════════════════════════╗
-║                    DATA ANALYSIS CAPABILITIES                    ║
-╠══════════════════════════════════════════════════════════════════╣
-║  📊 Comprehensive Dataset Summary                                ║
-║     • Statistical metrics                                        ║
-║     • Missing value analysis                                     ║
-║     • Data type profiling                                        ║
-║                                                                  ║
-║  🤖 Intelligent Quality Assessment                               ║
-║     • AI-powered evaluation using Gemini API                     ║
-║                                                                  ║
-║  📈 Column-wise Analysis                                         ║
-║     • Detailed examination of each column                        ║
-║     • Numeric and categorical insights                           ║
-╚══════════════════════════════════════════════════════════════════╝
-```
-
-</div>
-
-<br>
+- **Comprehensive Summary**: Statistical metrics, missing values, data type profiling
+- **AI Quality Assessment**: Gemini-powered evaluation
+- **Column-wise Analysis**: Detailed numeric and categorical insights
 
 ### 🧹 Smart Data Cleaning
 
-<div align="center">
-
 | Feature | Description | Status |
 |:--------|:------------|:------:|
-| **Missing Value Detection** | Automatic identification and handling of null values | ✅ |
-| **Outlier Management** | 99th percentile statistical capping for numerical columns | ✅ |
-| **Data Normalization** | Automated column name standardization and value scaling | ✅ |
-| **Categorical Encoding** | One-hot encoding for machine learning readiness | ✅ |
-| **Negative Value Handling** | Automatic conversion of negative values to absolute | ✅ |
+| **Missing Value Detection** | Automatic identification and handling | ✅ |
+| **Outlier Management** | 99th percentile statistical capping | ✅ |
+| **Data Normalization** | Column standardization and value scaling | ✅ |
+| **Categorical Encoding** | One-hot encoding for ML readiness | ✅ |
+| **Negative Value Handling** | Automatic conversion to absolute values | ✅ |
 
-</div>
-
-<br>
-
-### 📊 Professional Visualization Suite
-
-<div align="center">
+### 📊 Visualization Suite
 
 <table>
 <tr>
 <td align="center" width="33%">
-<h4>📊 10 Chart Types</h4>
+<h4>📊 Chart Types</h4>
 <p>
 • Histograms<br>
 • Bar charts<br>
@@ -341,11 +293,12 @@ exec(dashboard_code)
 • Heatmaps<br>
 • Pie charts<br>
 • Correlation matrices<br>
-• And more...
+• Violin plots<br>
+• Area charts
 </p>
 </td>
 <td align="center" width="33%">
-<h4>🎛️ Interactive Dashboard</h4>
+<h4>🎛️ Interactive Features</h4>
 <p>
 • Real-time filtering<br>
 • KPI cards<br>
@@ -355,11 +308,11 @@ exec(dashboard_code)
 • Responsive design
 </p>
 </td>
-<td align="center" width="33%">
-<h4>✨ Publication Quality</h4>
+<td align="center" width="34%">
+<h4>✨ Professional Quality</h4>
 <p>
-• Professional styling<br>
-• Custom titles<br>
+• Custom styling<br>
+• Proper titles<br>
 • Axis labels<br>
 • Legends<br>
 • Color schemes<br>
@@ -369,201 +322,171 @@ exec(dashboard_code)
 </tr>
 </table>
 
-</div>
-
-<br>
-
-### 🤖 AI-Powered Intelligence
-
-<br>
-
-<div align="center">
+### 🤖 AI Integration
 
 <table>
 <tr>
-<td width="100%">
-
-<h3 align="center">🧠 Gemini Integration</h3>
-
-<p align="center">
-<code>Advanced AI analysis for data insights</code><br>
-<code>Intelligent recommendations generation</code>
-</p>
-
+<td align="center" width="50%">
+<h4>🧠 Gemini 2.5 Pro</h4>
+<p>Advanced data analysis and cleaning recommendations</p>
+<p>🔴 <em>Thorough & Comprehensive</em></p>
+</td>
+<td align="center" width="50%">
+<h4>⚡ Gemini 2.5 Flash</h4>
+<p>Fast visualization code generation</p>
+<p>🟢 <em>Quick & Efficient</em></p>
 </td>
 </tr>
 </table>
 
-<table>
-<tr>
-<td width="50%">
+<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/vintage.png" alt="divider"/>
 
-<h3 align="center">💻 Automated Code Generation</h3>
+## 🔧 Technical Stack
 
-<p align="center">
-<code>AI-generated Python code for cleaning</code><br>
-<code>AI-generated visualization code</code>
-</p>
-
-</td>
-<td width="50%">
-
-<h3 align="center">📋 Predictive Reporting</h3>
-
-<p align="center">
-<code>Automated data analysis reports</code><br>
-<code>Business intelligence insights</code>
-</p>
-
-</td>
-</tr>
-</table>
-
-</div>
-
-<br>
-
-<div align="center">
-  <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/vintage.png" alt="divider"/>
-</div>
-
-## 📊 Output Deliverables
-
-<div align="center">
-
-### *What you'll receive after processing*
-
-<br>
+### Core Dependencies
 
 <table>
-<tr>
-<td align="center" width="20%">
-<h3>1️⃣</h3>
-<h4>Cleaned Dataset</h4>
-<p><em>ML-ready data with proper encoding and standardization</em></p>
-</td>
-<td align="center" width="20%">
-<h3>2️⃣</h3>
-<h4>Professional Visualizations</h4>
-<p><em>Comprehensive chart suite for data exploration</em></p>
-</td>
-<td align="center" width="20%">
-<h3>3️⃣</h3>
-<h4>Interactive Dashboard</h4>
-<p><em>Real-time analytics with filters and KPI metrics</em></p>
-</td>
-<td align="center" width="20%">
-<h3>4️⃣</h3>
-<h4>Predictive Analysis Report</h4>
-<p><em>Automated insights and business recommendations</em></p>
-</td>
-</tr>
-</table>
-
-</div>
-
-<br>
-
-<div align="center">
-  <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png" alt="divider"/>
-</div>
-
-## 🔧 Technical Architecture
-
-<div align="center">
-
-### **Technology Stack**
-
-</div>
-
-<br>
-
-<table align="center" >
 <tr>
 <td width="50%" valign="top">
 
 #### 📊 Data Processing
-```
-• pandas
-• numpy
+```python
+pandas      # Data manipulation
+numpy       # Numerical operations
 ```
 
 #### 📈 Visualization
-```
-• matplotlib
-• seaborn
-• plotly
+```python
+matplotlib  # Static plots
+seaborn     # Statistical graphics
+plotly      # Interactive charts
 ```
 
 #### 🤖 Machine Learning
-```
-• scikit-learn
+```python
+scikit-learn  # Preprocessing & encoding
 ```
 
 </td>
 <td width="50%" valign="top">
 
 #### 🧠 AI Integration
-```
-• google-generativeai
+```python
+google-generativeai  # Gemini API
 ```
 
-#### 🎛️ Interactive Widgets
-```
-• ipywidgets
+#### 🎛️ Interactive Components
+```python
+ipywidgets  # Dashboard widgets
 ```
 
 #### ✅ Validation
-```
-• jsonschema
+```python
+jsonschema  # Data validation
 ```
 
 </td>
 </tr>
 </table>
 
-<br>
+### Notebook Structure
+
+```
+📓 Cells 1-2:   Environment Setup (Dependencies)
+🤖 Cells 3-4:   AI Initialization (Gemini Config)
+📁 Cell 5:      Data Loading (Upload & Profile)
+🧹 Cells 6-9:   AI Cleaning (Quality Improvement)
+📊 Cells 10-14: Visualization (Chart Generation)
+📈 Cells 15-17: Dashboard (Interactive Interface)
+📋 Cells 18-19: Reporting (Insights & Recommendations)
+```
+
+<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png" alt="divider"/>
+
+## 📊 Output Deliverables
 
 <div align="center">
 
-### **AI Models Utilized**
-
 <table>
 <tr>
-<th>Model</th>
-<th>Purpose</th>
-<th>Speed</th>
-</tr>
-<tr>
-<td align="center"><strong>Gemini 2.5 Pro</strong></td>
-<td>Advanced data analysis and cleaning recommendations</td>
-<td align="center">🔴 Thorough</td>
-</tr>
-<tr>
-<td align="center"><strong>Gemini 2.5 Flash</strong></td>
-<td>Fast visualization code generation</td>
-<td align="center">🟢 Fast</td>
+<td align="center" width="25%">
+<h3>1️⃣</h3>
+<h4>Cleaned Dataset</h4>
+<p><em>ML-ready with encoding and standardization</em></p>
+</td>
+<td align="center" width="25%">
+<h3>2️⃣</h3>
+<h4>Visualizations</h4>
+<p><em>10+ professional charts</em></p>
+</td>
+<td align="center" width="25%">
+<h3>3️⃣</h3>
+<h4>Interactive Dashboard</h4>
+<p><em>Real-time analytics with KPIs</em></p>
+</td>
+<td align="center" width="25%">
+<h3>4️⃣</h3>
+<h4>Analysis Report</h4>
+<p><em>Automated insights & recommendations</em></p>
+</td>
 </tr>
 </table>
 
 </div>
 
-<br>
+<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/water.png" alt="divider"/>
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/dark.png" alt="divider"/>
-</div>
+## 📈 Use Cases
 
-## 🛡️ Security Features
+<table>
+<tr>
+<td width="50%" valign="top">
 
-<div align="center">
+### 💼 Business Intelligence
+- Sales analysis & forecasting
+- Performance tracking
+- KPI monitoring & dashboards
+- Revenue analysis
+- Market trend identification
+
+### 🔬 Data Science
+- Automated ETL pipelines
+- Feature engineering
+- Model preparation
+- Data preprocessing
+- Exploratory data analysis
+
+</td>
+<td width="50%" valign="top">
+
+### 📊 Research Analytics
+- Statistical analysis
+- Correlation studies
+- Pattern recognition
+- Hypothesis testing
+- Trend analysis
+
+### 📋 Reporting Automation
+- Automated report generation
+- Executive dashboards
+- Periodic reporting
+- Stakeholder presentations
+- Business intelligence insights
+
+</td>
+</tr>
+</table>
+
+<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/dark.png" alt="divider"/>
+
+## 🛡️ Security
 
 ```
 ╔═══════════════════════════════════════════════════════════╗
 ║               SECURITY & PRIVACY MEASURES                 ║
 ╠═══════════════════════════════════════════════════════════╣
 ║  ✅  Secure API Handling                                  ║
-║      → Gemini API keys stored in Colab secrets            ║
+║      → API keys stored in Colab secrets                   ║
 ║                                                           ║
 ║  ✅  No Hardcoded Credentials                             ║
 ║      → Secure authentication practices                    ║
@@ -573,167 +496,63 @@ exec(dashboard_code)
 ╚═══════════════════════════════════════════════════════════╝
 ```
 
-</div>
-
-<br>
-
-<div align="center">
-  <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/water.png" alt="divider"/>
-</div>
-
-## 📈 Use Cases
-
-<div align="center">
-
-<table>
-<tr>
-<td width="50%" valign="top">
-
-### 💼 Business Intelligence
-```
-✓ Sales analysis
-✓ Performance tracking
-✓ KPI monitoring
-✓ Revenue forecasting
-✓ Market analysis
-```
-
-### 🔬 Data Science
-```
-✓ Automated ETL pipelines
-✓ Feature engineering
-✓ Model preparation
-✓ Data preprocessing
-✓ Exploratory analysis
-```
-
-</td>
-<td width="50%" valign="top">
-
-### 📊 Research Analytics
-```
-✓ Statistical analysis
-✓ Trend identification
-✓ Pattern recognition
-✓ Hypothesis testing
-✓ Correlation studies
-```
-
-### 📋 Reporting Automation
-```
-✓ Automated report generation
-✓ Professional visuals
-✓ Executive dashboards
-✓ Periodic reporting
-✓ Stakeholder presentations
-```
-
-</td>
-</tr>
-</table>
-
-</div>
-
-<br>
-
-<div align="center">
-  <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png" alt="divider"/>
-</div>
+<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png" alt="divider"/>
 
 ## 📚 Project Structure
 
-<br>
-
-<div>
-
-### 📂 Repository Organization
 ```
 DataLens-AI-Intelligent-Data-Analytics-Agent/
 │
 └── 📊 DataLens AI - Intelligent Data Analytics Agent.ipynb
-    (Version 2 - Trained on Google Colab)
+    (Version 2 - Optimized for Google Colab)
 ```
 
-<br>
+### 🚀 Deployment
 
----
-
-### 🚀 Deployment Status
-
-<table align="center" >
+<table align="center">
 <tr>
-<td align="center" width="65%">
+<td align="center" width="50%">
 
-**🌐 Version 1**
-
-Deployed - Hugging Face
-
-<br>
+**🌐 Version 1 - Live Demo**
 
 [![Live Demo](https://img.shields.io/badge/Try-Live_Demo-orange?style=for-the-badge&logo=huggingface)](https://huggingface.co/spaces/adinathjagtap/ai-data-analysis-agent)
 
+Deployed on Hugging Face Spaces
+
 </td>
-<td align="center" width="35%">
+<td align="center" width="50%">
 
-**📦 Version 2**
+**📦 Version 2 - Current**
 
-Available on this Repository
+![Status](https://img.shields.io/badge/Status-Available-success?style=for-the-badge)
 
-<br>
-
-![Status](https://img.shields.io/badge/Status-Current-success?style=for-the-badge)
+Available in this Repository
 
 </td>
 </tr>
 </table>
 
-</div>
-
-<br>
-
-<div align="center">
-  <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/grass.png" alt="divider"/>
-</div>
-
-## 🚨 Notes
-
-<div align="center">
+### 🚨 Important Notes
 
 ```
-⚠️  IMPORTANT INFORMATION
+⚠️  REQUIREMENTS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-✓ Requires Google Colab environment for optimal performance
-✓ Gemini API key must be configured in Colab secrets
+✓ Google Colab environment recommended
+✓ Gemini API key configured in Colab secrets
 ✓ Supports CSV and Excel file formats
-✓ Automatic dependency installation and version checking
+✓ Automatic dependency installation
 ```
 
-</div>
-<br>
-
-<div align="center">
-  <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png" alt="divider"/>
-</div>
+<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png" alt="divider"/>
 
 <br>
 
 <div align="center">
 
-## 🎓 Google's 5-Day AI Agents Intensive Course
+## 🎓 Capstone Project
 
-### *Capstone Project Submission*
-
-<br>
-
-```
-╔═══════════════════════════════════════════════════════════╗
-║                                                           ║
-║   This project was built as a capstone submission for     ║
-║   Google's 5-Day AI Agents Intensive Course               ║
-║                                                           ║
-╚═══════════════════════════════════════════════════════════╝
-```
+**Google's 5-Day AI Agents Intensive Course**
 
 <br>
 
@@ -752,9 +571,7 @@ Available on this Repository
 
 <br>
 
-## Built with ❤️ using
-
-<br>
+### Built with ❤️ using
 
 <p>
   <img src="https://img.shields.io/badge/Built%20with-Google%20Gemini%20AI-purple?style=for-the-badge&logo=google&logoColor=white" alt="Gemini"/>
@@ -763,15 +580,11 @@ Available on this Repository
 
 <br>
 
-<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/vintage.png" alt="divider"/>
+**Transform your data into insights with AI ✨**
 
 <br>
 
-### Transform your data into insights with AI ✨
-
-<br>
-
-**Made by Adinath Somnath Jagtap & Prajwal Ashok Zolage 🚀**
+Made by **Adinath Somnath Jagtap** & **Prajwal Ashok Zolage** 🚀
 
 <br>
 
