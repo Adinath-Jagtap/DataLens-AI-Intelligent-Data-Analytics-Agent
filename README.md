@@ -14,6 +14,7 @@
 
 <p align="center">
   <a href="https://huggingface.co/spaces/adinathjagtap/ai-data-analysis-agent">🚀 Live Demo (V1)</a> •
+  <a href="https://youtu.be/lJAdrE78hZ8">📺 Video Demo</a> •
 </p>
 
 *Capstone Project for Google's 5-Day AI Agents Intensive Course*
@@ -555,6 +556,9 @@ Available in this Repository
 <br>
 
 <p>
+  <a href="https://youtu.be/lJAdrE78hZ8">
+    <img src="https://img.shields.io/badge/📺_Watch-Video_Demo-red?style=for-the-badge&logo=youtube" alt="Video Demo"/>
+  </a>
   <a href="https://huggingface.co/spaces/adinathjagtap/ai-data-analysis-agent">
     <img src="https://img.shields.io/badge/🚀_Try-Live_Demo-orange?style=for-the-badge&logo=huggingface" alt="Live Demo"/>
   </a>
