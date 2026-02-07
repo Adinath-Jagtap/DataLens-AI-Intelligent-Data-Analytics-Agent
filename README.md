@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/Google-Gemini%20AI-purple?style=for-the-badge&logo=google&logoColor=white" alt="Gemini"/>
 </p>
 
-**An autonomous AI-powered data analytics system that transforms raw datasets into professional visualizations and interactive dashboards**
+**An autonomous AI-powered data analytics system that transforms raw datasets into professional meaningful visualizations and interactive dashboards**
 
 <p align="center">
   <a href="https://huggingface.co/spaces/adinathjagtap/ai-data-analysis-agent">🚀 Live Demo (V1)</a> •
