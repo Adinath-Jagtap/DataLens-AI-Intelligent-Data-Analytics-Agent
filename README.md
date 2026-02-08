@@ -1,6 +1,4 @@
 <div align="center">
-
-
 # 📊 DataLens AI
 
 ### *Intelligent Data Analytics Agent*
