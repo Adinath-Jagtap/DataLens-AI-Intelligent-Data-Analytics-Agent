@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}History{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>History</h1>
+  <a href="{{ url_for('main.upload') }}" class="btn-primary">+ New analysis</a>
+</div>
+
+{% if analyses %}
+<div class="analysis-list">
+  {% for a in analyses %}
+  <div class="analysis-row">
+    <div class="analysis-icon">⬡</div>
+    <a href="{{ url_for('main.analysis', analysis_id=a['_id']) }}" class="analysis-info">
+      <span class="analysis-name">{{ a.file_name }}</span>
+      <span class="analysis-meta">
+        {% if a.summary.get('rows') %}{{ a.summary.rows | int }} rows · {{ a.summary.cols }} cols · {% endif %}
+        {{ a.created_at.strftime('%d %b %Y, %H:%M') if a.created_at else '' }}
+        {% if a.charts_b64 %} · {{ a.charts_b64 | length }} charts{% endif %}
+        {% if a.chat_history %} · {{ a.chat_history | length }} messages{% endif %}
+      </span>
+    </a>
+    <span class="status-badge status-{{ a.status }}">{{ a.status }}</span>
+    <form method="POST" action="{{ url_for('main.delete', analysis_id=a['_id']) }}"
+          onsubmit="return confirm('Delete this analysis?')">
+      <button type="submit" class="btn-danger-sm">Delete</button>
+    </form>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+  <div class="empty-icon">◎</div>
+  <h2>Nothing here yet</h2>
+  <p>Upload a dataset to see your analysis history.</p>
+  <a href="{{ url_for('main.upload') }}" class="btn-primary">Upload dataset</a>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Upload{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Upload dataset</h1>
+    <p class="text-muted">CSV or Excel · up to {{ config.MAX_UPLOAD_MB }} MB</p>
+  </div>
+</div>
+
+<div class="upload-wrap">
+  <form method="POST" action="{{ url_for('main.upload') }}" enctype="multipart/form-data" class="upload-form">
+    <label for="dataset" class="dropzone">
+      <div class="dropzone-icon">⬆</div>
+      <p class="dropzone-title">Click to choose a file</p>
+      <p class="dropzone-sub">or drag and drop here</p>
+      <div class="file-badges">
+        <span class="badge">.csv</span>
+        <span class="badge">.xls</span>
+        <span class="badge">.xlsx</span>
+      </div>
+      <input type="file" id="dataset" name="dataset" accept=".csv,.xls,.xlsx" required class="file-input">
+    </label>
+
+    <div id="file-preview" class="file-preview hidden"></div>
+
+    <button type="submit" class="btn-primary btn-full btn-lg">Analyse with AI</button>
+  </form>
+
+  <ul class="upload-notes">
+    <li>✓ File is processed server-side with Python pandas</li>
+    <li>✓ Only cleaned data and metadata are stored</li>
+    <li>✓ AI analysis runs via Groq — fast and accurate</li>
+  </ul>
+</div>
+
+<style>
+.file-input { display: none; }
+.file-preview { margin-top: 1rem; padding: 1rem 1.25rem; background: var(--sand-light);
+  border: 1px solid var(--sand); border-radius: 10px; font-family: var(--font-mono);
+  font-size: 0.85rem; color: var(--ink); }
+.file-preview.hidden { display: none; }
+</style>
+
+<script>
+document.getElementById('dataset').addEventListener('change', function() {
+  const preview = document.getElementById('file-preview');
+  if (this.files[0]) {
+    const f = this.files[0];
+    const mb = (f.size / 1024 / 1024).toFixed(2);
+    preview.textContent = f.name + '  (' + mb + ' MB)';
+    preview.classList.remove('hidden');
+  }
+});
+</script>
+{% endblock %}

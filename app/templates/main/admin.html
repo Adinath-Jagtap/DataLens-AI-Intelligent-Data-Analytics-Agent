@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Admin Panel</h1>
+  <span class="badge">{{ users | length }} users · {{ analyses | length }} analyses</span>
+</div>
+
+<section class="section">
+  <h2 class="section-title">Users</h2>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Joined</th>
+          <th>Analyses</th>
+          <th>Admin</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td>{{ u.display_name }}</td>
+          <td class="text-muted">{{ u.email }}</td>
+          <td class="text-muted">{{ u.created_at.strftime('%d %b %Y') if u.created_at else '—' }}</td>
+          <td>{{ u.analysis_count or 0 }}</td>
+          <td>{{ '✓' if u.is_admin else '' }}</td>
+          <td>
+            {% if not u.is_admin %}
+            <form method="POST" action="{{ url_for('main.admin_delete_user', user_id=u['_id']) }}"
+                  onsubmit="return confirm('Delete user {{ u.display_name }} and all their data?')">
+              <button type="submit" class="btn-danger-sm">Delete</button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">Recent analyses</h2>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>File</th>
+          <th>Status</th>
+          <th>Rows</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for a in analyses %}
+        <tr>
+          <td>
+            <a href="{{ url_for('main.analysis', analysis_id=a['_id']) }}" class="table-link">
+              {{ a.file_name }}
+            </a>
+          </td>
+          <td><span class="status-badge status-{{ a.status }}">{{ a.status }}</span></td>
+          <td>{{ a.summary.get('rows', '—') }}</td>
+          <td class="text-muted">{{ a.created_at.strftime('%d %b %Y') if a.created_at else '—' }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

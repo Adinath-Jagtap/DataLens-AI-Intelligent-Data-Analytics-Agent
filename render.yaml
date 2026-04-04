@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: datalens-ai
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn run:app
+    envVars:
+      - key: FLASK_SECRET_KEY
+        generateValue: true
+      - key: MONGO_URI
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: MAX_UPLOAD_MB
+        value: "50"

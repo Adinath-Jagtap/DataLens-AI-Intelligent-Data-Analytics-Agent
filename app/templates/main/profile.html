@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Profile</h1>
+</div>
+
+<div class="profile-grid">
+  <div class="card">
+    <div class="avatar">{{ current_user.display_name[0].upper() }}</div>
+    <h2 class="profile-name">{{ current_user.display_name }}</h2>
+    <p class="text-muted">{{ current_user.email }}</p>
+    <p class="text-muted" style="margin-top:0.25rem; font-size:0.85rem;">
+      Joined {{ current_user.created_at.strftime('%B %Y') if current_user.created_at else '—' }}
+    </p>
+    <a href="{{ url_for('auth.logout') }}" class="btn-outline btn-full" style="margin-top:1.5rem;">Sign out</a>
+  </div>
+
+  <div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value">{{ analyses | length }}</div>
+        <div class="stat-label">Analyses</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ total_charts }}</div>
+        <div class="stat-label">Charts generated</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ total_chats }}</div>
+        <div class="stat-label">AI messages</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:1.25rem;">
+      <h3 style="margin-bottom:1rem;">Account details</h3>
+      <table class="detail-table">
+        <tr>
+          <td class="text-muted">Name</td>
+          <td>{{ current_user.display_name }}</td>
+        </tr>
+        <tr>
+          <td class="text-muted">Email</td>
+          <td>{{ current_user.email }}</td>
+        </tr>
+        <tr>
+          <td class="text-muted">Plan</td>
+          <td><span class="badge">Free forever</span></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

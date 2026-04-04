@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Good to see you, {{ current_user.display_name.split()[0] }}.</h1>
+    <p class="text-muted">Ready to analyse something new?</p>
+  </div>
+  <a href="{{ url_for('main.upload') }}" class="btn-primary">+ Upload dataset</a>
+</div>
+
+{% if analyses %}
+<section>
+  <h2 class="section-title">Recent analyses</h2>
+  <div class="analysis-list">
+    {% for a in analyses %}
+    <a href="{{ url_for('main.analysis', analysis_id=a['_id']) }}" class="analysis-row">
+      <div class="analysis-icon">⬡</div>
+      <div class="analysis-info">
+        <span class="analysis-name">{{ a.file_name }}</span>
+        <span class="analysis-meta">
+          {{ a.summary.get('rows', '—') | int | format_number }} rows ·
+          {{ a.summary.get('cols', '—') }} cols ·
+          {{ a.created_at.strftime('%d %b %Y') if a.created_at else '' }}
+        </span>
+      </div>
+      <span class="status-badge status-{{ a.status }}">{{ a.status }}</span>
+      <span class="row-arrow">→</span>
+    </a>
+    {% endfor %}
+  </div>
+  <a href="{{ url_for('main.history') }}" class="view-all-link">View all history →</a>
+</section>
+{% else %}
+<div class="empty-state">
+  <div class="empty-icon">◎</div>
+  <h2>No analyses yet</h2>
+  <p>Upload your first CSV or Excel file to get started.</p>
+  <a href="{{ url_for('main.upload') }}" class="btn-primary">Upload dataset</a>
+</div>
+{% endif %}
+{% endblock %}

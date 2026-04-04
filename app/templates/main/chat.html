@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Chat — {{ doc.file_name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>AI Chat</h1>
+    <p class="text-muted">{{ doc.file_name }}</p>
+  </div>
+  <a href="{{ url_for('main.analysis', analysis_id=doc['_id']) }}" class="btn-outline">← Back to analysis</a>
+</div>
+
+<div class="chat-wrap">
+  <div class="chat-history">
+    {% if not doc.chat_history %}
+    <div class="chat-empty">
+      <p>Ask anything about your dataset — column stats, patterns, outliers, correlations.</p>
+    </div>
+    {% endif %}
+
+    {% for msg in doc.chat_history %}
+    <div class="chat-msg chat-{{ msg.role }}">
+      <div class="chat-bubble">{{ msg.content }}</div>
+      <div class="chat-role">{{ 'You' if msg.role == 'user' else 'DataLens AI' }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <form method="POST" action="{{ url_for('main.chat', analysis_id=doc['_id']) }}" class="chat-form">
+    <textarea name="message" rows="3" placeholder="Ask about your data…" required class="chat-input"></textarea>
+    <button type="submit" class="btn-primary">Send</button>
+  </form>
+</div>
+{% endblock %}

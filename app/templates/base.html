@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}DataLens{% endblock %} — DataLens AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Epilogue:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+
+{% if current_user.is_authenticated %}
+<nav class="navbar">
+  <a href="{{ url_for('main.home') }}" class="nav-brand">DataLens <span class="brand-ai">AI</span></a>
+  <div class="nav-links">
+    <a href="{{ url_for('main.upload') }}" class="nav-link {% if request.endpoint == 'main.upload' %}active{% endif %}">Upload</a>
+    <a href="{{ url_for('main.history') }}" class="nav-link {% if request.endpoint == 'main.history' %}active{% endif %}">History</a>
+    <a href="{{ url_for('main.profile') }}" class="nav-link {% if request.endpoint == 'main.profile' %}active{% endif %}">Profile</a>
+    {% if current_user.is_admin %}
+    <a href="{{ url_for('main.admin') }}" class="nav-link {% if request.endpoint == 'main.admin' %}active{% endif %}">Admin</a>
+    {% endif %}
+    <a href="{{ url_for('auth.logout') }}" class="btn-outline-sm">Sign out</a>
+  </div>
+</nav>
+{% endif %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="flash-container">
+    {% for category, message in messages %}
+    <div class="flash flash-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+{% endwith %}
+
+<main class="{% block main_class %}page{% endblock %}">
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+  <span>DataLens AI — data analysis, simplified.</span>
+</footer>
+
+</body>
+</html>

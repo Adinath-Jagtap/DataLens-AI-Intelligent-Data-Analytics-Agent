@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Welcome{% endblock %}
+{% block main_class %}landing{% endblock %}
+
+{% block content %}
+<div class="hero">
+  <div class="hero-tag">No code. No complexity.</div>
+  <h1 class="hero-title">Turn your data<br><em>into insight</em></h1>
+  <p class="hero-sub">Upload a CSV or Excel file. Get AI-powered analysis, charts, and a live chat assistant — in seconds.</p>
+  <div class="hero-cta">
+    <a href="{{ url_for('auth.register') }}" class="btn-primary">Get started free</a>
+    <a href="{{ url_for('auth.login') }}" class="btn-outline">Sign in</a>
+  </div>
+</div>
+
+<div class="features-grid">
+  <div class="feature-card">
+    <div class="feature-icon">⬆</div>
+    <h3>Upload anything</h3>
+    <p>CSV or Excel files up to 50 MB. Processing happens on our server — no browser limitations.</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">◎</div>
+    <h3>Instant charts</h3>
+    <p>Bar, scatter, histogram, pie, line and correlation heatmap — auto-generated from your columns.</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">✦</div>
+    <h3>AI insights</h3>
+    <p>Groq LLM reads your dataset shape and tells you what matters: quality score, patterns, anomalies.</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">⌁</div>
+    <h3>Chat with your data</h3>
+    <p>Ask questions in plain English. The AI knows your column names, types and stats.</p>
+  </div>
+</div>
+{% endblock %}

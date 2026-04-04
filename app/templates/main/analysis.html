@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block title %}{{ doc.file_name }}{% endblock %}
+
+{% block content %}
+
+{# ── Header ── #}
+<div class="page-header">
+  <div>
+    <h1 class="truncate">{{ doc.file_name }}</h1>
+    <div class="meta-row">
+      <span class="status-badge status-{{ doc.status }}">{{ doc.status }}</span>
+      {% if ai_result.dataset_type %}<span class="badge">{{ ai_result.dataset_type }}</span>{% endif %}
+      {% if summary.rows %}<span class="text-muted">{{ summary.rows | int }} rows · {{ summary.cols }} cols</span>{% endif %}
+    </div>
+  </div>
+  <div class="header-actions">
+    <a href="{{ url_for('main.chat', analysis_id=doc['_id']) }}" class="btn-outline">Chat with AI</a>
+    <a href="{{ url_for('main.export_csv', analysis_id=doc['_id']) }}" class="btn-primary">↓ Export CSV</a>
+  </div>
+</div>
+
+{# ── KPI Cards ── #}
+<div class="kpi-grid">
+  <div class="kpi-card">
+    <div class="kpi-value">{{ summary.get('rows', 0) | int }}</div>
+    <div class="kpi-label">Total rows</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-value">{{ summary.get('cols', 0) }}</div>
+    <div class="kpi-label">Columns</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-value">{{ summary.get('null_total', 0) }}</div>
+    <div class="kpi-label">Missing values</div>
+  </div>
+  <div class="kpi-card kpi-accent">
+    <div class="kpi-value">{{ ai_result.get('quality_score', '—') }}{% if ai_result.get('quality_score') %}<span class="kpi-unit">/100</span>{% endif %}</div>
+    <div class="kpi-label">Data quality</div>
+  </div>
+</div>
+
+{# ── AI Insights ── #}
+{% if ai_result.get('key_insights') %}
+<section class="section">
+  <h2 class="section-title">✦ AI Insights</h2>
+  <div class="insights-grid">
+    {% for insight in ai_result.key_insights %}
+    <div class="insight-card">{{ insight }}</div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{# ── Charts ── #}
+{% if charts_b64 %}
+<section class="section">
+  <h2 class="section-title">Charts</h2>
+  <div class="charts-grid">
+    {% for key, b64 in charts_b64.items() %}
+    <div class="chart-card">
+      <img src="data:image/png;base64,{{ b64 }}" alt="{{ key }} chart" class="chart-img" loading="lazy">
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{# ── Column Summary ── #}
+{% if summary.get('columns') %}
+<section class="section">
+  <h2 class="section-title">Column summary</h2>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Column</th>
+          <th>Type</th>
+          <th>Nulls</th>
+          <th>Unique</th>
+          <th>Range / Top values</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for col in summary.columns %}
+        <tr>
+          <td class="col-name">{{ col.name }}</td>
+          <td><span class="badge-mono">{{ col.dtype }}</span></td>
+          <td>{{ col.nulls }}</td>
+          <td>{{ col.unique }}</td>
+          <td class="text-muted">
+            {% if col.min is defined %}
+              {{ col.min }} – {{ col.max }}
+            {% else %}
+              {{ col.get('top_values', [])[:3] | join(', ') }}
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endif %}
+
+{# ── Data Preview ── #}
+{% if rows %}
+<section class="section">
+  <div class="section-header-row">
+    <h2 class="section-title" style="margin:0">Cleaned data preview</h2>
+    <span class="text-muted">Showing {{ (page-1)*50+1 }}–{{ [(page)*50, total_rows] | min }} of {{ total_rows }}</span>
+  </div>
+  <div class="table-wrap">
+    <table class="data-table data-table-sm">
+      <thead>
+        <tr>
+          {% for col in rows[0].keys() %}
+          <th>{{ col }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+        <tr>
+          {% for val in row.values() %}
+          <td>{{ val if val is not none else '' }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if total_pages > 1 %}
+  <div class="pagination">
+    {% if page > 1 %}
+    <a href="?page={{ page - 1 }}" class="page-btn">← Prev</a>
+    {% endif %}
+    <span class="page-info">Page {{ page }} of {{ total_pages }}</span>
+    {% if page < total_pages %}
+    <a href="?page={{ page + 1 }}" class="page-btn">Next →</a>
+    {% endif %}
+  </div>
+  {% endif %}
+</section>
+{% endif %}
+
+{% endblock %}
