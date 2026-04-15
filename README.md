@@ -14,6 +14,7 @@
 
 <p align="center">
   <a href="https://huggingface.co/spaces/adinathjagtap/ai-data-analysis-agent">🚀 Live Demo (V1)</a> •
+  <a href="https://datalens-ai-intelligent-data-analytics.onrender.com/">🚀 Live Demo (V2)</a> •
   <a href="https://youtu.be/lJAdrE78hZ8">📺 Video Demo</a> •
 </p>
 
