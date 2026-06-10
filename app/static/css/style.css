@@ -1032,13 +1032,51 @@ textarea:focus {
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .page { padding: 1.5rem 1rem 3rem; }
-  .navbar { padding: 0 1rem; }
-  .nav-links { gap: 0 ; }
-  .nav-link { padding: 0.4rem 0.5rem; font-size: 0.82rem; }
-  .profile-grid { grid-template-columns: 1fr; }
-  .stats-grid { grid-template-columns: repeat(3, 1fr); }
-  .page-header h1 { font-size: 1.5rem; }
-  .charts-grid { grid-template-columns: 1fr; }
-  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  /* Page & Layout */
+  .page { padding: 1.25rem 1rem 3rem; }
+  .page-header h1 { font-size: 1.6rem; }
+  .page-header { flex-direction: column; gap: 0.5rem; align-items: flex-start; }
+  .header-actions { width: 100%; display: flex; gap: 0.5rem; justify-content: stretch; overflow-x: auto; padding-bottom: 0.5rem; }
+  .header-actions .btn-primary, .header-actions .btn-outline { flex: 1; text-align: center; justify-content: center; white-space: nowrap; }
+
+  /* Navbar */
+  .navbar { padding: 0 1rem; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+  .nav-links { gap: 0.25rem; }
+  .nav-link { padding: 0.4rem 0.5rem; font-size: 0.85rem; }
+
+  /* Grids */
+  .kpi-grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+  .insights-grid, .charts-grid, .profile-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+  
+  /* Tables */
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; border-radius: 8px; }
+  .data-table th, .data-table td { padding: 0.6rem 0.75rem; font-size: 0.8rem; }
+
+  /* Chat Interface */
+  .chat-page { padding: 0; }
+  .chat-bubble { max-width: 95%; font-size: 0.85rem; }
+  .chat-form-card { padding: 0.75rem; border-radius: 12px; margin-top: 1rem; }
+  #message-input { min-height: 50px; padding: 0.5rem; font-size: 0.85rem; }
+  .suggested-pills { gap: 0.4rem; }
+  .pill-btn { font-size: 0.75rem; padding: 0.35rem 0.75rem; }
+
+  /* Forms & Upload */
+  .auth-card { padding: 1.5rem; }
+  .dropzone { padding: 2rem 1rem; }
+  .dropzone-title { font-size: 1rem; }
+  
+  /* Typography Adjustments */
+  .kpi-value { font-size: 1.6rem; }
+  .section-title { font-size: 1.1rem; }
+  .analysis-name { font-size: 0.85rem; }
+  .btn-primary, .btn-outline { padding: 0.5rem 1rem; font-size: 0.85rem; }
 }
+
+@media (max-width: 480px) {
+  /* Phone specific tweaks */
+  .stats-grid { grid-template-columns: 1fr; }
+  .kpi-grid { grid-template-columns: 1fr; }
+  .nav-brand { font-size: 1.1rem; }
+}
+
