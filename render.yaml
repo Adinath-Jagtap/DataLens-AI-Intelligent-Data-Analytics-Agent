@@ -3,7 +3,7 @@ services:
     name: datalens-ai
     runtime: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn run:app
+    startCommand: gunicorn -w 1 --threads 4 run:app
     envVars:
       - key: FLASK_SECRET_KEY
         generateValue: true
@@ -12,6 +12,14 @@ services:
       - key: GROQ_API_KEY
         sync: false
       - key: ADMIN_EMAIL
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GITHUB_CLIENT_ID
+        sync: false
+      - key: GITHUB_CLIENT_SECRET
         sync: false
       - key: MAX_UPLOAD_MB
         value: "50"
