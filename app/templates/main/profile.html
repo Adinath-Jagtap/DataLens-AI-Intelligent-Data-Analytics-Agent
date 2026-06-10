@@ -48,7 +48,16 @@
           <td class="text-muted">Plan</td>
           <td><span class="badge">Free forever</span></td>
         </tr>
-      </table>
+        <tr>
+          <td class="text-muted">Connected</td>
+          <td>
+            {% for p in oauth_providers %}
+              <span class="badge" style="text-transform:capitalize;margin-right:4px;">{{ p }}</span>
+            {% else %}
+              <span class="text-muted">Email only</span>
+            {% endfor %}
+          </td>
+        </tr>
     </div>
   </div>
 </div>

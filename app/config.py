@@ -10,3 +10,8 @@ class Config:
     ADMIN_EMAIL       = os.environ.get("ADMIN_EMAIL", "")
     MAX_UPLOAD_MB     = int(os.environ.get("MAX_UPLOAD_MB", 50))
     MAX_CONTENT_LENGTH = int(os.environ.get("MAX_UPLOAD_MB", 50)) * 1024 * 1024
+    PROFILE_MAX_ROWS  = int(os.environ.get("PROFILE_MAX_ROWS", 10000))
+    GOOGLE_CLIENT_ID     = os.environ.get("GOOGLE_CLIENT_ID", "")
+    GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", "")
+    GITHUB_CLIENT_ID     = os.environ.get("GITHUB_CLIENT_ID", "")
+    GITHUB_CLIENT_SECRET = os.environ.get("GITHUB_CLIENT_SECRET", "")

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Profile — {{ doc.file_name }}{% endblock %}
+
+{% block head %}
+<style>
+.profile-iframe-wrap {
+  width: 100%;
+  border: 1px solid var(--sand);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--white);
+  margin-top: 1.5rem;
+}
+.profile-iframe {
+  width: 100%;
+  height: 85vh;
+  border: none;
+  display: block;
+}
+.profile-notice {
+  padding: 0.75rem 1.25rem;
+  background: var(--sand-light);
+  border-bottom: 1px solid var(--sand);
+  font-size: 0.82rem;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Data Profile</h1>
+    <p class="text-muted">{{ doc.file_name }}</p>
+  </div>
+  <div class="header-actions">
+    <a href="{{ url_for('main.analysis', analysis_id=doc['_id']) }}" class="btn-outline">← Back to analysis</a>
+    <a href="{{ url_for('main.download_profile', analysis_id=doc['_id']) }}" class="btn-primary">↓ Download HTML</a>
+  </div>
+</div>
+
+{% if minimal %}
+<div class="flash flash-success" style="margin-bottom:1rem;">
+  Running in minimal mode — correlations and interaction plots skipped for datasets over 5,000 rows.
+</div>
+{% endif %}
+
+<div class="profile-iframe-wrap">
+  <div class="profile-notice">
+    <span>Interactive profiling report — generated with ydata-profiling</span>
+    <a href="{{ url_for('main.download_profile', analysis_id=doc['_id']) }}" class="text-muted">Download standalone →</a>
+  </div>
+  <iframe
+    class="profile-iframe"
+    id="profile-frame"
+    srcdoc="{{ html_report | forceescape }}"
+    sandbox="allow-scripts allow-same-origin"
+    title="Data profiling report for {{ doc.file_name }}"
+  ></iframe>
+</div>
+
+<script>
+// Auto-resize iframe to its content height
+const frame = document.getElementById("profile-frame");
+frame.addEventListener("load", function() {
+  try {
+    const h = frame.contentDocument.documentElement.scrollHeight;
+    if (h > 400) frame.style.height = h + "px";
+  } catch(e) {}
+});
+</script>
+{% endblock %}

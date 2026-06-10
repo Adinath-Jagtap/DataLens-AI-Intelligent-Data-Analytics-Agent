@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% block title %}{{ doc.file_name }} — Shared{% endblock %}
+
+{% block head %}
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<div class="shared-banner">
+  <span>📊 Shared read-only analysis · DataLens AI</span>
+  <a href="{{ url_for('auth.register') }}" class="btn-primary"
+     style="padding:0.35rem 0.9rem;font-size:0.82rem;">
+    Analyse your own data free →
+  </a>
+</div>
+
+<div class="page-header">
+  <div>
+    <h1 class="truncate">{{ doc.file_name }}</h1>
+    <div class="meta-row">
+      <span class="status-badge status-done">shared</span>
+      {% if ai_result.dataset_type %}
+        <span class="badge">{{ ai_result.dataset_type }}</span>
+      {% endif %}
+      {% if summary.rows %}
+        <span class="text-muted">
+          {{ summary.rows | int }} rows · {{ summary.cols }} cols
+        </span>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- KPI cards -->
+<div class="kpi-grid">
+  <div class="kpi-card">
+    <div class="kpi-value">{{ summary.get('rows', 0) | int }}</div>
+    <div class="kpi-label">Total rows</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-value">{{ summary.get('cols', 0) }}</div>
+    <div class="kpi-label">Columns</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-value">{{ summary.get('null_total', 0) }}</div>
+    <div class="kpi-label">Missing values</div>
+  </div>
+  <div class="kpi-card kpi-accent">
+    <div class="kpi-value">
+      {{ ai_result.get('quality_score', '—') }}
+      {% if ai_result.get('quality_score') %}
+        <span class="kpi-unit">/100</span>
+      {% endif %}
+    </div>
+    <div class="kpi-label">Data quality</div>
+  </div>
+</div>
+
+<!-- AI insights -->
+{% if ai_result.get('key_insights') %}
+<section class="section">
+  <h2 class="section-title">✦ AI Insights</h2>
+  <div class="insights-grid">
+    {% for insight in ai_result.key_insights %}
+    <div class="insight-card">{{ insight }}</div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Charts -->
+{% if chart_configs %}
+<section class="section">
+  <h2 class="section-title">Charts</h2>
+  <div class="charts-grid">
+    {% for key, config in chart_configs.items() %}
+    <div class="chart-card">
+      <div id="chart-{{ key }}" class="plotly-chart"></div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Column summary -->
+{% if summary.get('columns') %}
+<section class="section">
+  <h2 class="section-title">Column summary</h2>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Column</th><th>Type</th><th>Nulls</th>
+          <th>Unique</th><th>Range / Top values</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for col in summary.columns %}
+        <tr>
+          <td class="col-name">{{ col.name }}</td>
+          <td><span class="badge-mono">{{ col.dtype }}</span></td>
+          <td>{{ col.nulls }}</td>
+          <td>{{ col.unique }}</td>
+          <td class="text-muted">
+            {% if col.min is defined %}
+              {{ col.min }} – {{ col.max }}
+            {% else %}
+              {{ col.get('top_values', [])[:3] | join(', ') }}
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endif %}
+
+<!-- Bottom CTA -->
+<div class="card" style="margin-top:2rem;text-align:center;padding:2rem;">
+  <p style="font-size:1rem;font-weight:500;margin-bottom:0.5rem;">
+    Analyse your own data for free
+  </p>
+  <p class="text-muted" style="margin-bottom:1rem;">
+    Upload CSV or Excel and get AI-powered insights in seconds.
+  </p>
+  <a href="{{ url_for('auth.register') }}" class="btn-primary btn-lg">
+    Get started free →
+  </a>
+</div>
+
+<!-- Plotly rendering -->
+{% if chart_configs %}
+<script>
+const chartConfigs = {{ chart_configs | tojson }};
+document.addEventListener("DOMContentLoaded", function () {
+  const cfg = {
+    responsive: true,
+    displayModeBar: false,
+    displaylogo: false,
+  };
+  for (const [key, config] of Object.entries(chartConfigs)) {
+    const el = document.getElementById("chart-" + key);
+    if (el) Plotly.newPlot(el, config.data, config.layout, cfg);
+  }
+});
+</script>
+{% endif %}
+
+{% endblock %}

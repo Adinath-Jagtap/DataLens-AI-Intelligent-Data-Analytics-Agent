@@ -1,34 +1,427 @@
 {% extends "base.html" %}
 {% block title %}Chat — {{ doc.file_name }}{% endblock %}
 
-{% block content %}
-<div class="page-header">
-  <div>
-    <h1>AI Chat</h1>
-    <p class="text-muted">{{ doc.file_name }}</p>
-  </div>
-  <a href="{{ url_for('main.analysis', analysis_id=doc['_id']) }}" class="btn-outline">← Back to analysis</a>
-</div>
+{% block head %}
+<style>
+.chat-page { max-width: 760px; margin: 0 auto; }
 
-<div class="chat-wrap">
-  <div class="chat-history">
+.chat-history {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 240px;
+  padding-bottom: 0.5rem;
+}
+
+.chat-empty {
+  padding: 2.5rem;
+  background: var(--white);
+  border: 1px solid var(--sand);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.chat-msg { display: flex; flex-direction: column; gap: 0.25rem; }
+.chat-user      { align-items: flex-end; }
+.chat-assistant { align-items: flex-start; }
+
+.chat-bubble {
+  max-width: 82%;
+  padding: 0.85rem 1.1rem;
+  border-radius: var(--radius-lg);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+.chat-user .chat-bubble {
+  background: var(--sienna);
+  color: var(--white);
+  border-bottom-right-radius: 4px;
+}
+.chat-assistant .chat-bubble {
+  background: var(--white);
+  border: 1px solid var(--sand);
+  color: var(--ink-soft);
+  border-bottom-left-radius: 4px;
+  box-shadow: var(--shadow);
+}
+.chat-role {
+  font-size: 0.75rem;
+  color: var(--muted);
+  padding: 0 0.25rem;
+}
+
+/* Typing dots */
+.typing-bubble {
+  display: flex !important;
+  align-items: center;
+  gap: 5px;
+  padding: 0.85rem 1.1rem !important;
+  min-width: 56px;
+}
+.dot {
+  width: 7px; height: 7px;
+  background: var(--muted);
+  border-radius: 50%;
+  animation: dot-pulse 1.2s infinite ease-in-out;
+}
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dot-pulse {
+  0%, 80%, 100% { transform: scale(0.65); opacity: 0.4; }
+  40%           { transform: scale(1.0);  opacity: 1.0; }
+}
+
+/* Suggested pills */
+.suggested-wrap { margin-bottom: 1.25rem; }
+.suggested-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+.suggested-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.pill-btn {
+  padding: 0.4rem 0.9rem;
+  background: var(--white);
+  border: 1.5px solid var(--sand);
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-family: var(--font-body);
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.pill-btn:hover {
+  border-color: var(--sienna);
+  color: var(--sienna);
+  background: #FFF8F4;
+}
+
+/* Input form */
+.chat-form-card {
+  background: var(--white);
+  border: 1px solid var(--sand);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.25rem;
+  box-shadow: var(--shadow);
+}
+.chat-input-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+#message-input {
+  flex: 1;
+  min-height: 60px;
+  max-height: 160px;
+  resize: none;
+  padding: 0.65rem 0.9rem;
+  border: 1.5px solid var(--sand);
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--ink);
+  background: var(--bg);
+  outline: none;
+  transition: border-color 0.15s;
+  line-height: 1.55;
+}
+#message-input:focus { border-color: var(--sienna); background: var(--white); }
+.chat-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+.chat-hint { font-size: 0.76rem; color: var(--muted); }
+
+/* Inline code in chat bubbles */
+.chat-bubble code {
+  background: var(--sand-light);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+}
+
+/* Fenced code blocks */
+.code-block {
+  position: relative;
+  background: #1e1e2e;
+  border-radius: 8px;
+  margin: 0.65rem 0;
+  overflow: hidden;
+}
+.code-block .code-lang {
+  display: block;
+  padding: 0.3rem 0.75rem;
+  background: rgba(255,255,255,0.06);
+  font-size: 0.72rem;
+  color: #a6adc8;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-family: var(--font-mono);
+}
+.code-block pre {
+  margin: 0;
+  padding: 0.75rem;
+  overflow-x: auto;
+}
+.code-block code {
+  background: none !important;
+  color: #cdd6f4;
+  font-size: 0.82rem;
+  font-family: var(--font-mono);
+  padding: 0 !important;
+  white-space: pre;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="chat-page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>AI Chat</h1>
+      <p class="text-muted">{{ doc.file_name }}</p>
+    </div>
+    <div class="header-actions">
+      <a href="{{ url_for('main.analysis', analysis_id=doc['_id']) }}"
+         class="btn-outline">← Analysis</a>
+    </div>
+  </div>
+
+  <!-- Suggested questions (only when history is empty) -->
+  {% if suggested and not doc.chat_history %}
+  <div class="suggested-wrap" id="suggested-wrap">
+    <div class="suggested-label">Try asking:</div>
+    <div class="suggested-pills">
+      {% for q in suggested %}
+      <button class="pill-btn" onclick="fillAndSend(this.textContent.trim())">
+        {{ q }}
+      </button>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Message history -->
+  <div class="chat-history" id="chat-history">
+
     {% if not doc.chat_history %}
-    <div class="chat-empty">
-      <p>Ask anything about your dataset — column stats, patterns, outliers, correlations.</p>
+    <div class="chat-empty" id="empty-state">
+      Ask anything about your dataset — column stats, patterns, outliers, correlations.
     </div>
     {% endif %}
 
     {% for msg in doc.chat_history %}
     <div class="chat-msg chat-{{ msg.role }}">
-      <div class="chat-bubble">{{ msg.content }}</div>
-      <div class="chat-role">{{ 'You' if msg.role == 'user' else 'DataLens AI' }}</div>
+      <div class="chat-bubble" data-raw="{{ msg.content | e }}"></div>
+      <div class="chat-role">
+        {{ 'You' if msg.role == 'user' else 'DataLens AI' }}
+      </div>
     </div>
     {% endfor %}
+
+    <!-- Typing indicator (hidden by default) -->
+    <div class="chat-msg chat-assistant hidden" id="typing-indicator">
+      <div class="chat-bubble typing-bubble">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+    </div>
+
   </div>
 
-  <form method="POST" action="{{ url_for('main.chat', analysis_id=doc['_id']) }}" class="chat-form">
-    <textarea name="message" rows="3" placeholder="Ask about your data…" required class="chat-input"></textarea>
-    <button type="submit" class="btn-primary">Send</button>
-  </form>
+  <!-- Input form -->
+  <div class="chat-form-card" style="margin-top:1.25rem;">
+    <div class="chat-input-row">
+      <textarea
+        id="message-input"
+        placeholder="Ask about your data…"
+        rows="2"
+        aria-label="Chat message"
+      ></textarea>
+      <button id="send-btn" class="btn-primary" type="button">Send</button>
+    </div>
+    <div class="chat-footer-row">
+      <span class="chat-hint">Ctrl + Enter to send</span>
+      <form method="POST"
+            action="{{ url_for('main.clear_chat', analysis_id=doc['_id']) }}"
+            onsubmit="return confirm('Clear all chat history?')"
+            style="margin:0;">
+        <button type="submit" class="btn-danger-sm">Clear chat</button>
+      </form>
+    </div>
+  </div>
+
 </div>
+
+<script>
+const ANALYSIS_ID = "{{ doc['_id'] }}";
+const historyEl   = document.getElementById("chat-history");
+const inputEl     = document.getElementById("message-input");
+const sendBtn     = document.getElementById("send-btn");
+const typingEl    = document.getElementById("typing-indicator");
+
+// ── Render existing history ──────────────────────────────────────────────
+document.querySelectorAll(".chat-bubble[data-raw]").forEach(function (el) {
+  el.innerHTML = formatText(el.getAttribute("data-raw"));
+});
+scrollBottom();
+
+// ── Text formatter ───────────────────────────────────────────────────────
+function formatText(text) {
+  if (!text) return "";
+  // Unescape HTML entities from Jinja2
+  text = text
+    .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+
+  // Handle fenced code blocks: ```python ... ``` and ``` ... ```
+  text = text.replace(/```(\w*)\n([\s\S]*?)```/g, function(match, lang, code) {
+    const escaped = code.replace(/</g, "&lt;").replace(/>/g, "&gt;").trim();
+    const label = lang ? `<span class="code-lang">${lang}</span>` : "";
+    return `<div class="code-block">${label}<pre><code>${escaped}</code></pre></div>`;
+  });
+
+  // Inline formatting
+  text = text
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.*?)\*/g,     "<em>$1</em>")
+    .replace(/`([^`]+)`/g,     "<code>$1</code>")
+    .replace(/\n- /g,  "<br>• ")
+    .replace(/\n\d+\. /g, function(m) { return "<br>" + m.trim() + " "; })
+    .replace(/\n/g, "<br>");
+  return text;
+}
+
+// ── Scroll helpers ────────────────────────────────────────────────────────
+function scrollBottom() {
+  window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+}
+
+// ── Append a message bubble ───────────────────────────────────────────────
+function appendBubble(role, content, streaming) {
+  const empty = document.getElementById("empty-state");
+  if (empty) empty.remove();
+
+  const wrap   = document.createElement("div");
+  wrap.className = "chat-msg chat-" + role;
+
+  const bubble = document.createElement("div");
+  bubble.className = "chat-bubble";
+  if (streaming) bubble.id = "stream-bubble";
+  bubble.innerHTML = formatText(content);
+
+  const label      = document.createElement("div");
+  label.className  = "chat-role";
+  label.textContent = role === "user" ? "You" : "DataLens AI";
+
+  wrap.appendChild(bubble);
+  wrap.appendChild(label);
+  historyEl.insertBefore(wrap, typingEl);
+  scrollBottom();
+  return bubble;
+}
+
+// ── Send message ──────────────────────────────────────────────────────────
+async function sendMessage() {
+  const text = inputEl.value.trim();
+  if (!text) return;
+
+  // Remove suggested pills
+  const sw = document.getElementById("suggested-wrap");
+  if (sw) sw.remove();
+
+  inputEl.value = "";
+  inputEl.style.height = "auto";
+  sendBtn.disabled    = true;
+  sendBtn.textContent = "…";
+
+  appendBubble("user", text, false);
+
+  typingEl.classList.remove("hidden");
+  scrollBottom();
+
+  try {
+    const resp = await fetch(
+      `/analysis/${ANALYSIS_ID}/chat/stream`,
+      {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ message: text }),
+      }
+    );
+
+    if (!resp.ok) throw new Error("Server error " + resp.status);
+
+    typingEl.classList.add("hidden");
+    const streamBubble = appendBubble("assistant", "", true);
+
+    const reader  = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+    let full   = "";
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+
+      const lines = buffer.split("\n");
+      buffer = lines.pop();
+
+      for (const line of lines) {
+        if (!line.startsWith("data: ")) continue;
+        let payload;
+        try { payload = JSON.parse(line.slice(6)); } catch { continue; }
+
+        if (payload.chunk) {
+          full += payload.chunk;
+          streamBubble.innerHTML = formatText(full);
+          scrollBottom();
+        }
+        if (payload.error) {
+          streamBubble.innerHTML = "Sorry, something went wrong. Please try again.";
+        }
+      }
+    }
+    streamBubble.removeAttribute("id");
+
+  } catch (err) {
+    typingEl.classList.add("hidden");
+    appendBubble("assistant", "Sorry, something went wrong. Please try again.", false);
+  }
+
+  sendBtn.disabled    = false;
+  sendBtn.textContent = "Send";
+  inputEl.focus();
+  scrollBottom();
+}
+
+// ── Fill from suggestion pill ─────────────────────────────────────────────
+function fillAndSend(text) {
+  inputEl.value = text;
+  sendMessage();
+}
+
+// ── Event listeners ───────────────────────────────────────────────────────
+sendBtn.addEventListener("click", sendMessage);
+
+inputEl.addEventListener("keydown", function (e) {
+  if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+inputEl.addEventListener("input", function () {
+  this.style.height = "auto";
+  this.style.height = Math.min(this.scrollHeight, 160) + "px";
+});
+</script>
 {% endblock %}

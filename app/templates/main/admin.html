@@ -63,6 +63,9 @@
             <a href="{{ url_for('main.analysis', analysis_id=a['_id']) }}" class="table-link">
               {{ a.file_name }}
             </a>
+            {% if a.share_enabled %}
+              <span class="badge" style="margin-left:0.5rem;">shared</span>
+            {% endif %}
           </td>
           <td><span class="status-badge status-{{ a.status }}">{{ a.status }}</span></td>
           <td>{{ a.summary.get('rows', '—') }}</td>

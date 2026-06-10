@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block title %}{{ doc.file_name }}{% endblock %}
 
+{% block head %}
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+{% endblock %}
+
 {% block content %}
 
 {# ── Header ── #}
@@ -15,8 +19,113 @@
   </div>
   <div class="header-actions">
     <a href="{{ url_for('main.chat', analysis_id=doc['_id']) }}" class="btn-outline">Chat with AI</a>
-    <a href="{{ url_for('main.export_csv', analysis_id=doc['_id']) }}" class="btn-primary">↓ Export CSV</a>
+    <a href="{{ url_for('main.data_profile', analysis_id=doc['_id']) }}" class="btn-outline">◎ Data profile</a>
+    <button class="btn-outline" id="share-toggle-btn"
+            onclick="document.getElementById('share-panel').classList.toggle('hidden')">
+      ↗ Share
+    </button>
+    <div class="export-menu" style="position:relative;">
+      <button class="btn-outline" onclick="this.nextElementSibling.classList.toggle('open')" aria-haspopup="true">
+        ↓ Export <i class="ti ti-chevron-down" aria-hidden="true"></i>
+      </button>
+      <div class="export-dropdown">
+        <a href="{{ url_for('main.export_csv', analysis_id=doc['_id']) }}" class="export-item">
+          <i class="ti ti-file-text" aria-hidden="true"></i> CSV
+        </a>
+        <a href="{{ url_for('main.export_excel_route', analysis_id=doc['_id']) }}" class="export-item">
+          <i class="ti ti-file-spreadsheet" aria-hidden="true"></i> Excel (.xlsx)
+        </a>
+        <a href="{{ url_for('main.export_json_route', analysis_id=doc['_id']) }}" class="export-item">
+          <i class="ti ti-braces" aria-hidden="true"></i> JSON
+        </a>
+        <a href="{{ url_for('main.export_parquet_route', analysis_id=doc['_id']) }}" class="export-item">
+          <i class="ti ti-database" aria-hidden="true"></i> Parquet
+        </a>
+        <a href="{{ url_for('main.export_pdf_route', analysis_id=doc['_id']) }}" class="export-item export-item-pdf">
+          <i class="ti ti-file-report" aria-hidden="true"></i> PDF Report
+        </a>
+      </div>
+    </div>
   </div>
+</div>
+
+<div id="share-panel" class="card hidden" style="margin-bottom:1.5rem;">
+
+  <div style="display:flex;align-items:center;justify-content:space-between;
+              margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
+    <div>
+      <div style="font-weight:500;font-size:0.95rem;">Share this analysis</div>
+      <div class="text-muted" style="font-size:0.83rem;margin-top:0.2rem;">
+        Anyone with the link can view — no login required.
+      </div>
+    </div>
+    {% if doc.share_enabled %}
+      <span class="status-badge status-done">Sharing on</span>
+    {% else %}
+      <span class="status-badge status-processing">Not shared</span>
+    {% endif %}
+  </div>
+
+  {% if doc.share_enabled %}
+
+    <!-- Active link row -->
+    <div class="share-link-row">
+      <input id="share-url-input" type="text" class="share-link-input" readonly
+             value="{{ request.host_url }}s/{{ doc.share_token }}">
+      <button class="btn-outline-sm" onclick="copyShareLink()">Copy</button>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;margin-top:0.75rem;
+                flex-wrap:wrap;align-items:center;">
+      <span class="text-muted" style="font-size:0.82rem;">
+        {% if doc.share_password %}🔒 Password protected{% else %}🔓 No password{% endif %}
+      </span>
+      <button class="btn-outline-sm"
+              onclick="document.getElementById('pw-update').classList.toggle('hidden')">
+        Change password
+      </button>
+      <button class="btn-danger-sm"
+              onclick="disableSharing('{{ doc['_id'] }}')">
+        Disable sharing
+      </button>
+    </div>
+
+    <div id="pw-update" class="hidden"
+         style="display:flex;gap:0.5rem;align-items:center;margin-top:0.75rem;">
+      <input type="password" id="new-pw-input"
+             placeholder="New password — leave blank to remove"
+             style="flex:1;padding:0.5rem 0.75rem;border:1.5px solid var(--sand);
+                    border-radius:8px;font-family:var(--font-body);font-size:0.875rem;">
+      <button class="btn-primary" style="padding:0.5rem 1rem;"
+              onclick="updateSharePassword('{{ doc['_id'] }}')">
+        Save
+      </button>
+    </div>
+
+  {% else %}
+
+    <!-- Enable sharing form -->
+    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:flex-end;">
+      <div class="field" style="flex:1;min-width:200px;margin:0;">
+        <label style="font-size:0.8rem;font-weight:500;">
+          Password <span class="text-muted">(optional)</span>
+        </label>
+        <input type="password" id="share-pw-input"
+               placeholder="Leave blank for a public link"
+               style="padding:0.5rem 0.75rem;border:1.5px solid var(--sand);
+                      border-radius:8px;font-family:var(--font-body);
+                      font-size:0.875rem;width:100%;margin-top:0.35rem;">
+      </div>
+      <button class="btn-primary"
+              onclick="enableSharing('{{ doc['_id'] }}')">
+        Generate link
+      </button>
+    </div>
+
+  {% endif %}
+
+  <div id="share-msg" class="text-muted"
+       style="font-size:0.82rem;margin-top:0.65rem;min-height:1.2rem;"></div>
 </div>
 
 {# ── KPI Cards ── #}
@@ -37,6 +146,12 @@
     <div class="kpi-value">{{ ai_result.get('quality_score', '—') }}{% if ai_result.get('quality_score') %}<span class="kpi-unit">/100</span>{% endif %}</div>
     <div class="kpi-label">Data quality</div>
   </div>
+  <div class="kpi-card">
+    <div class="kpi-value" style="color: {% if total_anomalies > 5 %}var(--error){% else %}var(--ink){% endif %}">
+      {{ total_anomalies }}
+    </div>
+    <div class="kpi-label">Anomalies flagged</div>
+  </div>
 </div>
 
 {# ── AI Insights ── #}
@@ -48,42 +163,84 @@
     <div class="insight-card">{{ insight }}</div>
     {% endfor %}
   </div>
+  {% if doc.status == 'done' %}
+  <div class="card" style="margin-top:1rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
+    <div>
+      <div style="font-weight:500; font-size:0.9rem;">Full profiling report available</div>
+      <div class="text-muted" style="margin-top:0.2rem;">Distributions, correlations, missing value matrix, duplicate detection, and more.</div>
+    </div>
+    <a href="{{ url_for('main.data_profile', analysis_id=doc['_id']) }}" class="btn-primary">View report →</a>
+  </div>
+  {% endif %}
 </section>
 {% endif %}
 
 {# ── Charts ── #}
-{% if charts_b64 %}
+{% if chart_configs %}
 <section class="section">
   <h2 class="section-title">Charts</h2>
-  <div class="charts-grid">
-    {% for key, b64 in charts_b64.items() %}
+  <div class="charts-grid" id="charts-grid">
+    {% for key, config in chart_configs.items() %}
     <div class="chart-card">
-      <img src="data:image/png;base64,{{ b64 }}" alt="{{ key }} chart" class="chart-img" loading="lazy">
+      <div id="chart-{{ key }}" class="plotly-chart"></div>
     </div>
     {% endfor %}
   </div>
 </section>
+
+<script>
+const chartConfigs = {{ chart_configs | tojson }};
+document.addEventListener("DOMContentLoaded", function() {
+  const defaultConfig = {
+    responsive: true,
+    displayModeBar: "hover",
+    modeBarButtonsToRemove: ["sendDataToCloud", "select2d", "lasso2d"],
+    displaylogo: false
+  };
+  for (const [key, config] of Object.entries(chartConfigs)) {
+    const el = document.getElementById("chart-" + key);
+    if (el) {
+      Plotly.newPlot(el, config.data, config.layout, defaultConfig);
+    }
+  }
+});
+</script>
 {% endif %}
 
 {# ── Column Summary ── #}
 {% if summary.get('columns') %}
 <section class="section">
   <h2 class="section-title">Column summary</h2>
+  
+  <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
+    {% set tags = [] %}
+    {% for c in summary.columns %}{% set _ = tags.append(c.tag) %}{% endfor %}
+    {% for tag in tags | unique %}
+      <span class="col-tag tag-{{ tag }}">{{ tag }}: {{ tags.count(tag) }}</span>
+    {% endfor %}
+    {% if total_anomalies > 0 %}
+      <span class="col-tag tag-text" style="margin-left: auto;">⚠ {{ total_anomalies }} Anomalies</span>
+    {% endif %}
+  </div>
+
   <div class="table-wrap">
     <table class="data-table">
       <thead>
         <tr>
           <th>Column</th>
+          <th>Tag</th>
           <th>Type</th>
           <th>Nulls</th>
           <th>Unique</th>
           <th>Range / Top values</th>
+          <th>Anomalies</th>
         </tr>
       </thead>
       <tbody>
         {% for col in summary.columns %}
         <tr>
           <td class="col-name">{{ col.name }}</td>
+          <td><span class="col-tag {{ col.get('tag_color', 'tag-unknown') }}">{{ col.get('tag', '—') }}</span></td>
           <td><span class="badge-mono">{{ col.dtype }}</span></td>
           <td>{{ col.nulls }}</td>
           <td>{{ col.unique }}</td>
@@ -92,6 +249,17 @@
               {{ col.min }} – {{ col.max }}
             {% else %}
               {{ col.get('top_values', [])[:3] | join(', ') }}
+            {% endif %}
+          </td>
+          <td>
+            {% set anomalies = col.get('anomalies', []) %}
+            {% if not anomalies %}
+              <span class="text-muted">—</span>
+            {% else %}
+              <span class="anomaly-text">⚠ {{ anomalies[0] }}</span>
+              {% if anomalies | length > 1 %}
+                <span class="text-muted"> +{{ anomalies | length - 1 }} more</span>
+              {% endif %}
             {% endif %}
           </td>
         </tr>
@@ -143,5 +311,83 @@
   {% endif %}
 </section>
 {% endif %}
+
+<script>
+document.addEventListener("click", function(e) {
+  document.querySelectorAll(".export-dropdown.open").forEach(function(d) {
+    if (!d.parentElement.contains(e.target)) d.classList.remove("open");
+  });
+});
+
+function msg(text) {
+  document.getElementById("share-msg").textContent = text;
+}
+
+function enableSharing(id) {
+  const pw = (document.getElementById("share-pw-input") || {}).value || "";
+  const fd = new FormData();
+  fd.append("action", "enable");
+  if (pw) fd.append("password", pw);
+
+  fetch(`/analysis/${id}/share`, { method: "POST", body: fd })
+    .then(r => r.json())
+    .then(data => {
+      if (data.url) {
+        msg("Link created — reloading…");
+        setTimeout(() => location.reload(), 700);
+      } else {
+        msg("Failed to create link. Try again.");
+      }
+    })
+    .catch(() => msg("Network error. Try again."));
+}
+
+function disableSharing(id) {
+  if (!confirm("Disable sharing? The existing link will stop working immediately.")) return;
+  const fd = new FormData();
+  fd.append("action", "disable");
+  fetch(`/analysis/${id}/share`, { method: "POST", body: fd })
+    .then(r => r.json())
+    .then(() => location.reload());
+}
+
+function copyShareLink() {
+  const val = document.getElementById("share-url-input").value;
+  navigator.clipboard.writeText(val)
+    .then(() => {
+      msg("✓ Link copied to clipboard");
+      setTimeout(() => msg(""), 2500);
+    })
+    .catch(() => {
+      document.getElementById("share-url-input").select();
+      document.execCommand("copy");
+      msg("✓ Link copied");
+      setTimeout(() => msg(""), 2500);
+    });
+}
+
+function updateSharePassword(id) {
+  const pw = document.getElementById("new-pw-input").value.trim();
+  const fd = new FormData();
+  fd.append("password", pw);
+  fetch(`/analysis/${id}/share/password`, { method: "POST", body: fd })
+    .then(r => r.json())
+    .then(data => {
+      msg(data.password_protected ? "✓ Password updated" : "✓ Password removed — link is now public");
+      document.getElementById("pw-update").classList.add("hidden");
+      setTimeout(() => location.reload(), 1200);
+    })
+    .catch(() => msg("Failed to update password."));
+}
+
+// Close share panel when clicking outside it
+document.addEventListener("click", function (e) {
+  const panel  = document.getElementById("share-panel");
+  const btn    = document.getElementById("share-toggle-btn");
+  if (panel && !panel.contains(e.target) && !btn.contains(e.target)) {
+    panel.classList.add("hidden");
+  }
+});
+</script>
 
 {% endblock %}
