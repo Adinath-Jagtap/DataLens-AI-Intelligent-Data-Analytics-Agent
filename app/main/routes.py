@@ -589,34 +589,6 @@ def dashboard(analysis_id):
     )
 
 
-@main_bp.route("/analysis/<analysis_id>/dashboard/export-pbix")
-@login_required
-def export_pbix(analysis_id):
-    doc = get_analysis(analysis_id, current_user.id)
-    if not doc:
-        flash("Analysis not found.", "error")
-        return redirect(url_for("main.history"))
-
-    rows = doc.get("cleaned_rows", [])
-    if not rows:
-        flash("No data to export.", "error")
-        return redirect(url_for("main.dashboard", analysis_id=analysis_id))
-
-    df   = pd.DataFrame(rows)
-    cols = detect_dashboard_columns(df)
-
-    try:
-        pbix_bytes = generate_pbix(rows, doc.get("file_name", "dataset"), cols)
-    except Exception as e:
-        flash(f"Power BI export failed: {str(e)[:120]}", "error")
-        return redirect(url_for("main.dashboard", analysis_id=analysis_id))
-
-    file_stem = doc.get("file_name", "report").rsplit(".", 1)[0]
-    resp = make_response(pbix_bytes)
-    resp.headers["Content-Type"]        = "application/octet-stream"
-    resp.headers["Content-Disposition"] = f'attachment; filename="{file_stem}_dashboard.pbix"'
-    return resp
-
 
 
 # ── Admin ─────────────────────────────────────────────────────────────────────

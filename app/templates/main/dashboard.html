@@ -147,13 +147,6 @@
   <div class="db-export-bar">
     <a href="{{ url_for('main.analysis', analysis_id=doc['_id']) }}"
        class="btn-outline">← Analysis</a>
-
-    <a href="{{ url_for('main.export_pbix', analysis_id=doc['_id']) }}"
-       class="pbix-btn"
-       title="Download .pbix file to open in Power BI Desktop">
-      <span class="pbix-icon"><span>PBI</span></span>
-      Export to Power BI
-    </a>
   </div>
 </div>
 
