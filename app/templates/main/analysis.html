@@ -18,6 +18,7 @@
     </div>
   </div>
   <div class="header-actions">
+    <a href="{{ url_for('main.dashboard', analysis_id=doc['_id']) }}" class="btn-primary">📊 Dashboard</a>
     <a href="{{ url_for('main.chat', analysis_id=doc['_id']) }}" class="btn-outline">Chat with AI</a>
     <a href="{{ url_for('main.data_profile', analysis_id=doc['_id']) }}" class="btn-outline">◎ Data profile</a>
     <button class="btn-outline" id="share-toggle-btn"

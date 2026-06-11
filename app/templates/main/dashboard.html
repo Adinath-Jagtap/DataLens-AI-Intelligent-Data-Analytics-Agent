@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — {{ doc.file_name }}{% endblock %}
+
+{% block head %}
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+.db-grid-8 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.db-chart-card {
+  background: var(--white);
+  border: 1px solid var(--sand);
+  border-radius: var(--radius-lg);
+  padding: 0.5rem 0.75rem 0.75rem;
+  box-shadow: var(--shadow);
+  min-height: 340px;
+  display: flex;
+  flex-direction: column;
+}
+.db-chart-card.span-2 { grid-column: span 2; }
+.db-chart-title {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.5rem 0.25rem 0.25rem;
+}
+.plotly-db { flex: 1; min-height: 290px; }
+
+.db-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+.db-kpi {
+  background: var(--white);
+  border: 1px solid var(--sand);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.25rem;
+  box-shadow: var(--shadow);
+}
+.db-kpi-value {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  word-break: break-word;
+}
+.db-kpi-value.accent { color: var(--sienna); }
+.db-kpi-label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.4rem;
+}
+
+.detected-cols-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  align-items: center;
+}
+.detected-cols-bar span.label {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.db-export-bar {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.pbix-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.25rem;
+  background: #F2C811;
+  color: #252423;
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+.pbix-btn:hover {
+  background: #DEB509;
+  text-decoration: none;
+  color: #252423;
+  transform: translateY(-1px);
+}
+.pbix-btn:active { transform: scale(0.98); }
+.pbix-icon {
+  width: 18px; height: 18px;
+  background: #252423;
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.pbix-icon span {
+  color: #F2C811;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  line-height: 1;
+}
+
+.no-chart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 260px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 768px) {
+  .db-grid-8 { grid-template-columns: 1fr; }
+  .db-chart-card.span-2 { grid-column: span 1; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+<div class="page-header">
+  <div>
+    <h1>Dashboard</h1>
+    <p class="text-muted">{{ doc.file_name }}</p>
+  </div>
+  <div class="db-export-bar">
+    <a href="{{ url_for('main.analysis', analysis_id=doc['_id']) }}"
+       class="btn-outline">← Analysis</a>
+
+    <a href="{{ url_for('main.export_pbix', analysis_id=doc['_id']) }}"
+       class="pbix-btn"
+       title="Download .pbix file to open in Power BI Desktop">
+      <span class="pbix-icon"><span>PBI</span></span>
+      Export to Power BI
+    </a>
+  </div>
+</div>
+
+<!-- Detected columns info bar -->
+{% if detected_cols %}
+<div class="detected-cols-bar">
+  <span class="label">Auto-detected:</span>
+  {% for role, col in detected_cols.items() %}
+  <span class="badge">{{ role }}: <strong>{{ col }}</strong></span>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- KPI cards -->
+{% if kpis %}
+<div class="db-kpi-grid">
+  {% for key, kpi in kpis.items() %}
+  <div class="db-kpi">
+    {% if kpi.format == "currency" %}
+      <div class="db-kpi-value accent">
+        {{ "{:,.0f}".format(kpi.value) }}
+      </div>
+    {% elif kpi.format == "number" %}
+      <div class="db-kpi-value">
+        {{ "{:,.0f}".format(kpi.value) }}
+      </div>
+    {% else %}
+      <div class="db-kpi-value" style="font-size:1.1rem;">
+        {{ kpi.value }}
+      </div>
+    {% endif %}
+    <div class="db-kpi-label">{{ kpi.label }}</div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- 8-chart grid -->
+<div class="db-grid-8">
+
+  <!-- Row 1: Sales over time (wide) -->
+  <div class="db-chart-card span-2">
+    <div class="db-chart-title">Sales over time</div>
+    {% if charts.sales_over_time %}
+    <div id="c-sales-over-time" class="plotly-db"></div>
+    {% else %}
+    <div class="no-chart">Sales and date columns not detected</div>
+    {% endif %}
+  </div>
+
+  <!-- Row 2: Sales by product + Sales by region -->
+  <div class="db-chart-card">
+    <div class="db-chart-title">Sales by product</div>
+    {% if charts.sales_by_product %}
+    <div id="c-sales-by-product" class="plotly-db"></div>
+    {% else %}
+    <div class="no-chart">Product / sales columns not detected</div>
+    {% endif %}
+  </div>
+
+  <div class="db-chart-card">
+    <div class="db-chart-title">Sales by region / country</div>
+    {% if charts.sales_by_region %}
+    <div id="c-sales-by-region" class="plotly-db"></div>
+    {% else %}
+    <div class="no-chart">Region / sales columns not detected</div>
+    {% endif %}
+  </div>
+
+  <!-- Row 3: Sales vs quantity + Period heatmap -->
+  <div class="db-chart-card">
+    <div class="db-chart-title">Sales vs quantity</div>
+    {% if charts.sales_vs_quantity %}
+    <div id="c-sales-vs-quantity" class="plotly-db"></div>
+    {% else %}
+    <div class="no-chart">Sales and quantity columns not detected</div>
+    {% endif %}
+  </div>
+
+  <div class="db-chart-card">
+    <div class="db-chart-title">Period heatmap</div>
+    {% if charts.period_heatmap %}
+    <div id="c-period-heatmap" class="plotly-db"></div>
+    {% else %}
+    <div class="no-chart">Not enough temporal data</div>
+    {% endif %}
+  </div>
+
+  <!-- Row 4: Animated ranking (wide) -->
+  <div class="db-chart-card span-2">
+    <div class="db-chart-title">Top N ranking</div>
+    {% if charts.top_n_animated %}
+    <div id="c-top-n-animated" class="plotly-db"></div>
+    {% else %}
+    <div class="no-chart">Not enough categorical data</div>
+    {% endif %}
+  </div>
+
+  <!-- Row 5: Waterfall + Cumulative growth -->
+  <div class="db-chart-card">
+    <div class="db-chart-title">Sales contribution waterfall</div>
+    {% if charts.waterfall %}
+    <div id="c-waterfall" class="plotly-db"></div>
+    {% else %}
+    <div class="no-chart">Not enough data</div>
+    {% endif %}
+  </div>
+
+  <div class="db-chart-card">
+    <div class="db-chart-title">Cumulative growth</div>
+    {% if charts.cumulative_growth %}
+    <div id="c-cumulative-growth" class="plotly-db"></div>
+    {% else %}
+    <div class="no-chart">Not enough data</div>
+    {% endif %}
+  </div>
+
+</div>
+
+<script>
+  const charts = {{ charts|tojson|safe }};
+  const config = { responsive: true, displayModeBar: false };
+
+  if (charts.sales_over_time) {
+      Plotly.newPlot('c-sales-over-time', charts.sales_over_time.data, charts.sales_over_time.layout, config);
+  }
+  if (charts.sales_by_product) {
+      Plotly.newPlot('c-sales-by-product', charts.sales_by_product.data, charts.sales_by_product.layout, config);
+  }
+  if (charts.sales_by_region) {
+      Plotly.newPlot('c-sales-by-region', charts.sales_by_region.data, charts.sales_by_region.layout, config);
+  }
+  if (charts.sales_vs_quantity) {
+      Plotly.newPlot('c-sales-vs-quantity', charts.sales_vs_quantity.data, charts.sales_vs_quantity.layout, config);
+  }
+  if (charts.period_heatmap) {
+      Plotly.newPlot('c-period-heatmap', charts.period_heatmap.data, charts.period_heatmap.layout, config);
+  }
+  if (charts.top_n_animated) {
+      Plotly.newPlot('c-top-n-animated', charts.top_n_animated.data, charts.top_n_animated.layout, config).then(function() {
+          if (charts.top_n_animated.frames) {
+              Plotly.addFrames('c-top-n-animated', charts.top_n_animated.frames);
+          }
+      });
+  }
+  if (charts.waterfall) {
+      Plotly.newPlot('c-waterfall', charts.waterfall.data, charts.waterfall.layout, config);
+  }
+  if (charts.cumulative_growth) {
+      Plotly.newPlot('c-cumulative-growth', charts.cumulative_growth.data, charts.cumulative_growth.layout, config);
+  }
+</script>
+{% endblock %}

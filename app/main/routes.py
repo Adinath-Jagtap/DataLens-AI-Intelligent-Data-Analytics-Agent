@@ -22,6 +22,8 @@ from app.services.ai_service import (
 from app.services.code_executor import build_dataframe, execute_code
 from app.services.export_service import export_excel, export_json, export_parquet, export_pdf
 from app.services.profile_service import generate_profile
+from app.services.dashboard_service import build_dashboard, generate_pbix, detect_dashboard_columns
+import pandas as pd
 main_bp = Blueprint("main", __name__)
 
 ALLOWED = {".csv", ".xls", ".xlsx"}
@@ -556,6 +558,65 @@ def profile():
         total_chats=total_chats,
         oauth_providers=oauth_providers,
     )
+# ── Dashboard & Power BI Export ───────────────────────────────────────────────
+
+@main_bp.route("/analysis/<analysis_id>/dashboard")
+@login_required
+def dashboard(analysis_id):
+    doc = get_analysis(analysis_id, current_user.id)
+    if not doc:
+        flash("Analysis not found.", "error")
+        return redirect(url_for("main.history"))
+
+    rows = doc.get("cleaned_rows", [])
+    if not rows:
+        flash("No data available for dashboard.", "error")
+        return redirect(url_for("main.analysis", analysis_id=analysis_id))
+
+    try:
+        dashboard_data = build_dashboard(rows, doc.get("file_name", "dataset"))
+    except Exception as e:
+        flash(f"Dashboard generation failed: {str(e)[:120]}", "error")
+        return redirect(url_for("main.analysis", analysis_id=analysis_id))
+
+    return render_template(
+        "main/dashboard.html",
+        doc=doc,
+        kpis=dashboard_data["kpis"],
+        charts=dashboard_data["charts"],
+        detected_cols=dashboard_data["detected_cols"],
+        analysis_id=analysis_id,
+    )
+
+
+@main_bp.route("/analysis/<analysis_id>/dashboard/export-pbix")
+@login_required
+def export_pbix(analysis_id):
+    doc = get_analysis(analysis_id, current_user.id)
+    if not doc:
+        flash("Analysis not found.", "error")
+        return redirect(url_for("main.history"))
+
+    rows = doc.get("cleaned_rows", [])
+    if not rows:
+        flash("No data to export.", "error")
+        return redirect(url_for("main.dashboard", analysis_id=analysis_id))
+
+    df   = pd.DataFrame(rows)
+    cols = detect_dashboard_columns(df)
+
+    try:
+        pbix_bytes = generate_pbix(rows, doc.get("file_name", "dataset"), cols)
+    except Exception as e:
+        flash(f"Power BI export failed: {str(e)[:120]}", "error")
+        return redirect(url_for("main.dashboard", analysis_id=analysis_id))
+
+    file_stem = doc.get("file_name", "report").rsplit(".", 1)[0]
+    resp = make_response(pbix_bytes)
+    resp.headers["Content-Type"]        = "application/octet-stream"
+    resp.headers["Content-Disposition"] = f'attachment; filename="{file_stem}_dashboard.pbix"'
+    return resp
+
 
 
 # ── Admin ─────────────────────────────────────────────────────────────────────
