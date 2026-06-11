@@ -2,37 +2,630 @@
 {% block title %}Welcome{% endblock %}
 {% block main_class %}landing{% endblock %}
 
+{% block head %}
+<style>
+.landing { flex: 1; max-width: 100%; padding: 0; }
+
+/* ── Hero ── */
+.hero {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 4.5rem 2rem 3rem;
+  text-align: center;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--sienna-dk);
+  background: #FFF0E8;
+  border: 1px solid #F5C4B3;
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 1.5rem;
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 6vw, 4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  margin-bottom: 1.1rem;
+}
+.hero-title em { font-style: italic; color: var(--sienna); }
+
+.hero-sub {
+  font-size: 1.05rem;
+  color: var(--muted);
+  max-width: 450px;
+  margin: 0 auto 2rem;
+  line-height: 1.7;
+}
+
+.hero-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.9rem;
+}
+
+.trust-line {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.trust-line strong { color: var(--ink-soft); font-weight: 500; }
+
+/* ── Fake browser screen ── */
+.screen-wrap {
+  max-width: 620px;
+  margin: 2rem auto 0;
+  background: var(--sand-light);
+  border: 1px solid var(--sand);
+  border-radius: 16px;
+  padding: 10px;
+}
+
+.screen-chrome {
+  background: var(--sand);
+  border-radius: 8px 8px 0 0;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.chrome-dot { width: 9px; height: 9px; border-radius: 50%; }
+.chrome-url {
+  flex: 1;
+  margin: 0 8px;
+  background: var(--white);
+  border-radius: 4px;
+  padding: 3px 10px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--muted);
+}
+
+.screen-body {
+  background: var(--white);
+  border: 1px solid var(--sand);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  overflow: hidden;
+}
+
+.screen-topbar {
+  background: #FFF0E8;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #F5C4B3;
+}
+.screen-filename { font-size: 0.72rem; font-weight: 500; color: var(--sienna-dk); }
+.screen-done {
+  font-size: 0.68rem;
+  padding: 2px 8px;
+  background: #EDFAF1;
+  color: var(--success);
+  border: 1px solid #A8D5B5;
+  border-radius: 4px;
+}
+
+.screen-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 7px;
+  padding: 10px;
+}
+.skpi {
+  background: var(--bg);
+  border-radius: 7px;
+  padding: 8px 10px;
+}
+.skpi-v {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1;
+}
+.skpi-v.acc { color: var(--sienna); }
+.skpi-l {
+  font-size: 0.62rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 3px;
+}
+
+.screen-charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+  padding: 0 10px 10px;
+}
+.schart {
+  background: var(--bg);
+  border-radius: 7px;
+  height: 68px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  padding: 7px;
+  gap: 3px;
+}
+.sbar {
+  border-radius: 2px 2px 0 0;
+  width: 11px;
+  flex-shrink: 0;
+}
+
+.screen-insight {
+  margin: 0 10px 10px;
+  padding: 8px 10px;
+  background: #FFF0E8;
+  border-radius: 7px;
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+}
+.insight-pip {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--sienna);
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.insight-text {
+  font-size: 0.72rem;
+  color: var(--sienna-dk);
+  line-height: 1.5;
+}
+
+/* ── Stats bar ── */
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--sand);
+  border-bottom: 1px solid var(--sand);
+}
+.stat-cell {
+  padding: 1.4rem 1rem;
+  text-align: center;
+  background: var(--white);
+}
+.stat-cell + .stat-cell { border-left: 1px solid var(--sand); }
+.stat-n {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--sienna);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.stat-l {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* ── How it works ── */
+.how-section {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
+}
+.section-label {
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+.step-card {
+  background: var(--white);
+  border: 1px solid var(--sand);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem 1.25rem;
+}
+.step-num {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: #FFF0E8;
+  color: var(--sienna-dk);
+  font-size: 0.72rem;
+  font-weight: 500;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 10px;
+}
+.step-title {
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.step-desc {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* ── Feature grid ── */
+.features-section {
+  border-top: 1px solid var(--sand);
+  border-bottom: 1px solid var(--sand);
+  background: var(--white);
+}
+.features-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+.feat-cell {
+  padding: 1.75rem 2rem;
+  border-bottom: 1px solid var(--sand);
+}
+.feat-cell:nth-child(odd)  { border-right: 1px solid var(--sand); }
+.feat-cell:nth-child(n+3)  { border-bottom: none; }
+.feat-icon-box {
+  width: 32px; height: 32px;
+  background: #FFF0E8;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.95rem;
+  color: var(--sienna);
+  margin-bottom: 10px;
+}
+.feat-title {
+  font-size: 0.88rem;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+.feat-desc {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.65;
+}
+.feat-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin-top: 7px;
+  letter-spacing: 0.03em;
+}
+.b-core { background: #EAF3DE; color: #27500A; }
+.b-ai   { background: #EEEDFE; color: #3C3489; }
+.b-new  { background: #E6F1FB; color: #0C447C; }
+
+/* ── Use case pills ── */
+.pills-section {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 2.25rem 2rem;
+  text-align: center;
+}
+.pills-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: center;
+  margin-top: 0.85rem;
+}
+.uc-pill {
+  padding: 5px 14px;
+  border: 1px solid var(--sand);
+  border-radius: 20px;
+  font-size: 0.78rem;
+  color: var(--muted);
+  background: var(--white);
+}
+
+/* ── Bottom CTA ── */
+.bottom-cta {
+  padding: 3.5rem 2rem;
+  text-align: center;
+  max-width: 560px;
+  margin: 0 auto;
+}
+.bc-heading {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
+}
+.bc-sub {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Footer ── */
+.landing-footer {
+  border-top: 1px solid var(--sand);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--white);
+}
+.lf-brand {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.lf-pip {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--sienna);
+}
+.lf-links { display: flex; gap: 1.25rem; }
+.lf-link { font-size: 0.75rem; color: var(--muted); text-decoration: none; }
+.lf-link:hover { color: var(--ink); }
+
+@media (max-width: 600px) {
+  .steps-grid       { grid-template-columns: 1fr; }
+  .features-grid-2  { grid-template-columns: 1fr; }
+  .feat-cell:nth-child(odd)  { border-right: none; }
+  .feat-cell:nth-child(n+3)  { border-bottom: 1px solid var(--sand); }
+  .feat-cell:last-child      { border-bottom: none; }
+  .screen-kpis { grid-template-columns: repeat(2, 1fr); }
+  .stats-bar   { grid-template-columns: 1fr; }
+  .stat-cell + .stat-cell { border-left: none; border-top: 1px solid var(--sand); }
+}
+</style>
+{% endblock %}
+
 {% block content %}
+
+<!-- ── Hero ───────────────────────────────────────────────────── -->
 <div class="hero">
-  <div class="hero-tag">No code. No complexity.</div>
-  <h1 class="hero-title">Turn your data<br><em>into insight</em></h1>
-  <p class="hero-sub">Upload a CSV or Excel file. Get AI-powered analysis, charts, and a live chat assistant — in seconds.</p>
+  <div class="hero-eyebrow">
+    ✦ Powered by Groq · llama-3.3-70b
+  </div>
+
+  <h1 class="hero-title">
+    Your data deserves<br>
+    <em>better than a spreadsheet</em>
+  </h1>
+
+  <p class="hero-sub">
+    Upload any CSV or Excel file and get AI-powered charts, anomaly
+    detection, column tagging, and a live data chat — in under 30 seconds.
+  </p>
+
   <div class="hero-cta">
-    <a href="{{ url_for('auth.register') }}" class="btn-primary">Get started free</a>
-    <a href="{{ url_for('auth.login') }}" class="btn-outline">Sign in</a>
+    <a href="{{ url_for('auth.register') }}" class="btn-primary btn-lg">
+      Analyse your data free →
+    </a>
+    <a href="{{ url_for('auth.login') }}" class="btn-outline btn-lg">
+      Sign in
+    </a>
+  </div>
+
+  <p class="trust-line">
+    No credit card &nbsp;·&nbsp; No install &nbsp;·&nbsp;
+    <strong>Results in seconds</strong>
+  </p>
+</div>
+
+<!-- ── Product screenshot mockup ─────────────────────────────── -->
+<div style="padding: 0 2rem;">
+  <div class="screen-wrap">
+    <div class="screen-chrome">
+      <div class="chrome-dot" style="background:#E24B4A;"></div>
+      <div class="chrome-dot" style="background:#EF9F27;"></div>
+      <div class="chrome-dot" style="background:#639922;"></div>
+      <div class="chrome-url">datalens-v2-tu98.onrender.com/analysis/…</div>
+    </div>
+    <div class="screen-body">
+      <div class="screen-topbar">
+        <span class="screen-filename">sales_data_q4_2024.csv</span>
+        <span class="screen-done">✓ Analysis complete</span>
+      </div>
+      <div class="screen-kpis">
+        <div class="skpi">
+          <div class="skpi-v acc">12,450</div>
+          <div class="skpi-l">Total rows</div>
+        </div>
+        <div class="skpi">
+          <div class="skpi-v">24</div>
+          <div class="skpi-l">Columns</div>
+        </div>
+        <div class="skpi">
+          <div class="skpi-v">3</div>
+          <div class="skpi-l">Missing vals</div>
+        </div>
+        <div class="skpi">
+          <div class="skpi-v acc">91<span style="font-size:0.65rem;color:var(--muted);font-weight:400;">/100</span></div>
+          <div class="skpi-l">Quality score</div>
+        </div>
+      </div>
+      <div class="screen-charts">
+        <div class="schart">
+          <div class="sbar" style="height:28%;background:#E8845A;"></div>
+          <div class="sbar" style="height:52%;background:#C2571A;"></div>
+          <div class="sbar" style="height:40%;background:#A04416;"></div>
+          <div class="sbar" style="height:74%;background:#C2571A;"></div>
+          <div class="sbar" style="height:90%;background:#E8845A;"></div>
+          <div class="sbar" style="height:62%;background:#A04416;"></div>
+          <div class="sbar" style="height:45%;background:#C2571A;"></div>
+          <div class="sbar" style="height:78%;background:#E8845A;"></div>
+        </div>
+        <div class="schart" style="padding:5px;align-items:center;">
+          <svg width="100%" height="56" viewBox="0 0 150 56" preserveAspectRatio="none">
+            <polygon points="0,50 20,40 38,44 60,24 80,32 100,14 120,20 140,8 150,5 150,56 0,56"
+                     fill="#FFF0E8"/>
+            <polyline points="0,50 20,40 38,44 60,24 80,32 100,14 120,20 140,8 150,5"
+                      fill="none" stroke="#C2571A" stroke-width="2"/>
+          </svg>
+        </div>
+      </div>
+      <div class="screen-insight">
+        <div class="insight-pip"></div>
+        <div class="insight-text">
+          Revenue column shows high skew (3.2) — top 1% of customers drive
+          34% of total sales. Consider segmenting analysis by customer tier.
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
-<div class="features-grid">
-  <div class="feature-card">
-    <div class="feature-icon">⬆</div>
-    <h3>Upload anything</h3>
-    <p>CSV or Excel files up to 50 MB. Processing happens on our server — no browser limitations.</p>
+<!-- ── Stats bar ──────────────────────────────────────────────── -->
+<div class="stats-bar" style="margin-top: 3rem;">
+  <div class="stat-cell">
+    <div class="stat-n">6</div>
+    <div class="stat-l">Chart types auto-generated</div>
   </div>
-  <div class="feature-card">
-    <div class="feature-icon">◎</div>
-    <h3>Instant charts</h3>
-    <p>Bar, scatter, histogram, pie, line and correlation heatmap — auto-generated from your columns.</p>
+  <div class="stat-cell">
+    <div class="stat-n">&lt;30s</div>
+    <div class="stat-l">Upload to full insights</div>
   </div>
-  <div class="feature-card">
-    <div class="feature-icon">✦</div>
-    <h3>AI insights</h3>
-    <p>Groq LLM reads your dataset shape and tells you what matters: quality score, patterns, anomalies.</p>
-  </div>
-  <div class="feature-card">
-    <div class="feature-icon">⌁</div>
-    <h3>Chat with your data</h3>
-    <p>Ask questions in plain English. The AI knows your column names, types and stats.</p>
+  <div class="stat-cell">
+    <div class="stat-n">50MB</div>
+    <div class="stat-l">Max file size supported</div>
   </div>
 </div>
+
+<!-- ── How it works ───────────────────────────────────────────── -->
+<div class="how-section">
+  <div class="section-label">How it works</div>
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-num">1</div>
+      <div class="step-title">Upload your file</div>
+      <div class="step-desc">
+        Drop any CSV or Excel file up to 50 MB. No cleanup or
+        formatting required beforehand.
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">2</div>
+      <div class="step-title">AI analyses it</div>
+      <div class="step-desc">
+        Groq LLM reads column types, detects anomalies, scores
+        data quality, and generates 6 charts instantly.
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">3</div>
+      <div class="step-title">Explore and export</div>
+      <div class="step-desc">
+        Ask questions in plain English, interact with charts,
+        and download results in any format.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Feature grid ───────────────────────────────────────────── -->
+<div class="features-section">
+  <div class="features-grid-2">
+
+    <div class="feat-cell">
+      <div class="feat-icon-box">⬡</div>
+      <div class="feat-title">6 auto-generated charts</div>
+      <div class="feat-desc">
+        Bar, histogram, scatter, line, pie, and correlation heatmap —
+        rendered from your columns the moment your file is processed.
+      </div>
+      <span class="feat-badge b-core">Core</span>
+    </div>
+
+    <div class="feat-cell">
+      <div class="feat-icon-box">✦</div>
+      <div class="feat-title">AI insights + quality score</div>
+      <div class="feat-desc">
+        4 key findings, a 0–100 quality score, automatic dataset type
+        detection, and recommended cleaning steps.
+      </div>
+      <span class="feat-badge b-ai">AI</span>
+    </div>
+
+    <div class="feat-cell">
+      <div class="feat-icon-box">⌁</div>
+      <div class="feat-title">Chat with your data</div>
+      <div class="feat-desc">
+        Ask "what is the average revenue by region?" in plain English.
+        The AI knows your column names, ranges, and distributions.
+      </div>
+      <span class="feat-badge b-ai">AI</span>
+    </div>
+
+    <div class="feat-cell">
+      <div class="feat-icon-box">↓</div>
+      <div class="feat-title">Export in 5 formats</div>
+      <div class="feat-desc">
+        Download your cleaned data as CSV, Excel, JSON, Parquet, or a
+        full PDF report with charts and AI insights embedded.
+      </div>
+      <span class="feat-badge b-new">New</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── Use case pills ─────────────────────────────────────────── -->
+<div class="pills-section">
+  <div class="section-label">Works with any dataset</div>
+  <div class="pills-wrap">
+    <span class="uc-pill">Sales & revenue</span>
+    <span class="uc-pill">Customer data</span>
+    <span class="uc-pill">Survey results</span>
+    <span class="uc-pill">Financial reports</span>
+    <span class="uc-pill">Inventory tracking</span>
+    <span class="uc-pill">Marketing metrics</span>
+    <span class="uc-pill">HR & people data</span>
+    <span class="uc-pill">Research datasets</span>
+    <span class="uc-pill">Any CSV or Excel file</span>
+  </div>
+</div>
+
+<!-- ── Bottom CTA ─────────────────────────────────────────────── -->
+<div class="bottom-cta">
+  <h2 class="bc-heading">Ready to understand your data?</h2>
+  <p class="bc-sub">
+    Free forever. No credit card. No setup.
+    Upload your first file and get a full AI analysis in seconds.
+  </p>
+  <a href="{{ url_for('auth.register') }}" class="btn-primary btn-lg">
+    Analyse your first dataset →
+  </a>
+</div>
+
+<!-- ── Footer ─────────────────────────────────────────────────── -->
+<div class="landing-footer">
+  <div class="lf-brand">
+    <div class="lf-pip"></div>
+    DataLens <span style="color:var(--sienna);font-style:italic;margin-left:2px;">AI</span>
+  </div>
+  <div class="lf-links">
+    <a href="#" class="lf-link">Privacy</a>
+    <a href="#" class="lf-link">Terms</a>
+    <a href="https://github.com" class="lf-link">GitHub</a>
+  </div>
+</div>
+
 {% endblock %}
