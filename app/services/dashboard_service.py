@@ -823,11 +823,12 @@ def generate_pbix(rows: list, file_name: str, cols: dict) -> bytes:
     with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
 
         # ── [Content_Types].xml ──────────────────────────────────────────
-        content_types = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+        content_types = """<?xml version="1.0" encoding="utf-16" standalone="yes"?>
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
   <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
   <Default Extension="json" ContentType="application/json"/>
   <Default Extension="xml"  ContentType="application/xml"/>
+  <Override PartName="/Version" ContentType=""/>
   <Override PartName="/DataModel" ContentType="application/vnd.ms-pbi.datamodel"/>
   <Override PartName="/Report/Layout" ContentType="application/json"/>
 </Types>"""
@@ -847,7 +848,7 @@ def generate_pbix(rows: list, file_name: str, cols: dict) -> bytes:
         zf.writestr("DataModel", csv_data)
 
         # ── Version ─────────────────────────────────────────────────────
-        zf.writestr("Version", "2.128.0.0")
+        zf.writestr("Version", "1.25".encode("utf-16-le"))
 
         # ── Report/Layout (JSON) ─────────────────────────────────────────
         sales_col   = cols.get("sales", "")
