@@ -133,7 +133,7 @@
 <!-- Plotly rendering -->
 {% if chart_configs %}
 <script>
-const chartConfigs = {{ chart_configs | tojson }};
+const chartConfigs = {{ chart_configs | tojson | safe }};
 document.addEventListener("DOMContentLoaded", function () {
   const cfg = {
     responsive: true,

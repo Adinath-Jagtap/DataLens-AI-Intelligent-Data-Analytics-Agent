@@ -13,7 +13,6 @@ from app.models import (
     delete_user_and_data, increment_analysis_count,
     enable_sharing, disable_sharing, get_analysis_by_token
 )
-import bcrypt
 from app.services.data_service import parse_and_analyse
 from app.services.ai_service import (
     analyse_dataset, chat_with_data, chat_with_data_stream,
@@ -22,8 +21,7 @@ from app.services.ai_service import (
 from app.services.code_executor import build_dataframe, execute_code
 from app.services.export_service import export_excel, export_json, export_parquet, export_pdf
 from app.services.profile_service import generate_profile
-from app.services.dashboard_service import build_dashboard, generate_pbix, detect_dashboard_columns
-import pandas as pd
+from app.services.dashboard_service import build_dashboard
 main_bp = Blueprint("main", __name__)
 
 ALLOWED = {".csv", ".xls", ".xlsx"}

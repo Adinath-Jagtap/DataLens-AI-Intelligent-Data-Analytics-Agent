@@ -1,6 +1,4 @@
 import pandas as pd
-import numpy as np
-import io
 import gc
 
 def generate_profile(rows: list, file_name: str, minimal: bool = False) -> str:
